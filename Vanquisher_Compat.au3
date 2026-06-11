@@ -606,17 +606,24 @@ Func GetAreaVanquished()
         Return False
     EndIf
 
-    If $g_i_Vanquisher_InitialFoesToKill >= 0 Then
+    If $g_i_Vanquisher_InitialFoesToKill > 0 Then
         Local $l_i_TargetKilled = $g_i_Vanquisher_InitialFoesKilled + $g_i_Vanquisher_InitialFoesToKill
         If $l_i_Killed >= $l_i_TargetKilled Then
             $g_b_Vanquisher_CounterUnreliable = False
             Return True
         EndIf
-        If $g_b_Vanquisher_HasRunRoute And $g_i_Vanquisher_InitialFoesToKill > 0 Then Return True
+        Return False
     EndIf
 
     If $l_i_Killed > $g_i_Vanquisher_SessionStartKilled Then Return True
-    Return $g_b_Vanquisher_HasRunRoute
+    Return False
+EndFunc
+
+Func _Vanquisher_IsVanquishIncomplete()
+    If Not Map_GetInstanceInfo("IsExplorable") Then Return False
+    If GetAreaVanquished() Then Return False
+    Local $l_i_Remaining = GetFoesToKill()
+    Return $l_i_Remaining > 0 Or $g_b_Vanquisher_HasRunRoute
 EndFunc
 
 Func _Vanquisher_IsAlreadyVanquishedOnEntry()

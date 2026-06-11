@@ -528,6 +528,9 @@ While 1
 				_Vanquisher_ReturnToOutpost()
 				$boolrun = False
 				CurrentAction("Vanquish finished — stopping bot.")
+			ElseIf _Vanquisher_IsVanquishIncomplete() And GetMapID() = $Map_To_Farm Then
+				CurrentAction("Vanquish incomplete — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining. Returning to outpost to retry.")
+				_Vanquisher_ReturnToOutpost()
 			ElseIf GetMapID() = $Map_To_Farm Then
 				CurrentAction("Run finished — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining.")
 			EndIf
