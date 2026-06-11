@@ -53,9 +53,14 @@ Func Fight($x, $s = "")
 			CurrentAction("Waiting on Combat")
 			PingSleep(3000)
 		EndIf
-	Until $DeadOnTheRun Or GetNumberOfFoesInRangeOfAgent(-2, $x) = 0 Or TimerDiff($tDeadlock) > 120000
+	Until $DeadOnTheRun Or $g_b_Vanquisher_AbortRoute Or GetNumberOfFoesInRangeOfAgent(-2, $x) = 0 Or TimerDiff($tDeadlock) > 120000
 
 	UpdateVanquish()
+	If _Vanquisher_IsVanquishComplete() Then
+		_Vanquisher_OnVanquishComplete(" (fight)")
+		Return
+	EndIf
+
 	CurrentAction("Combat ended after: " & StringFormat("%d", TimerDiff($tDeadlock) / 1000) & "s")
 
 	If GetHealth(-2) < 2400 Then UseSkill(7, -2)

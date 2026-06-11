@@ -127,4 +127,6 @@ Global $g_i_Vanquisher_InitialFoesKilled = 0
 Global $g_b_Vanquisher_CounterUnreliable = False
 Global $g_i_Vanquisher_SessionStartKilled = 0
 Global $g_b_Vanquisher_HasRunRoute = False
+Global $g_b_Vanquisher_RunFinished = False
+Global $g_b_Vanquisher_AbortRoute = False
 Global $g_b_Vanquisher_DeathResignPending = False

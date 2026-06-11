@@ -523,11 +523,10 @@ While 1
 				CurrentAction("Wrong map (id " & GetMapID() & ", need farm " & $Map_To_Farm & " or outpost " & $Map_To_Zone & ").")
 			EndIf
 			UpdateVanquish()
-			If GetAreaVanquished() Then
-				CurrentAction("Area fully vanquished this run.")
-				_Vanquisher_ReturnToOutpost()
-				$boolrun = False
-				CurrentAction("Vanquish finished — stopping bot.")
+			If $g_b_Vanquisher_RunFinished Then
+				CurrentAction("Vanquish already finished this run.")
+			ElseIf GetAreaVanquished() Then
+				_Vanquisher_FinishRun()
 			ElseIf _Vanquisher_IsVanquishIncomplete() And GetMapID() = $Map_To_Farm Then
 				CurrentAction("Vanquish incomplete — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining. Returning to outpost to retry.")
 				_Vanquisher_ReturnToOutpost()

@@ -546,6 +546,8 @@ Func _Vanquisher_RefreshVanquishBaseline()
     $g_b_Vanquisher_CounterUnreliable = False
     $g_i_Vanquisher_SessionStartKilled = 0
     $g_b_Vanquisher_HasRunRoute = False
+    $g_b_Vanquisher_RunFinished = False
+    $g_b_Vanquisher_AbortRoute = False
     If Not Map_GetInstanceInfo("IsExplorable") Then Return
     If Not GetIsHardMode() Then
         CurrentAction("Not in Hard Mode — enable HM in outpost (party leader).")
@@ -607,16 +609,23 @@ Func GetAreaVanquished()
     EndIf
 
     If $g_i_Vanquisher_InitialFoesToKill > 0 Then
-        Local $l_i_TargetKilled = $g_i_Vanquisher_InitialFoesKilled + $g_i_Vanquisher_InitialFoesToKill
-        If $l_i_Killed >= $l_i_TargetKilled Then
-            $g_b_Vanquisher_CounterUnreliable = False
-            Return True
-        EndIf
-        Return False
+        $g_b_Vanquisher_CounterUnreliable = False
+        Return True
     EndIf
 
     If $l_i_Killed > $g_i_Vanquisher_SessionStartKilled Then Return True
     Return False
+EndFunc
+
+Func _Vanquisher_FinishRun()
+    Global $boolrun
+    If $g_b_Vanquisher_RunFinished Then Return
+    $g_b_Vanquisher_RunFinished = True
+    $g_b_Vanquisher_AbortRoute = True
+    CurrentAction("Vanquish complete — resigning and stopping bot.")
+    _Vanquisher_ReturnToOutpost()
+    $boolrun = False
+    CurrentAction("Vanquish finished — stopping bot.")
 EndFunc
 
 Func _Vanquisher_IsVanquishIncomplete()

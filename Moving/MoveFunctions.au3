@@ -1,4 +1,4 @@
-Global Const $CHECK_INTERVAL = 5000
+Global Const $CHECK_INTERVAL = 1500
 Global Const $REWARD_WAIT_TIME = 1800000 ; 30 minuti
 Global $ActionCounter = 0
 Global $Gui_Legio
@@ -15,6 +15,7 @@ Func MoveandAggroVQ($aWaypoints)
     $ActionCounter = 1
     CurrentAction("Vanquish route forward — " & UBound($aWaypoints) & " waypoints.")
     For $Index = 0 To UBound($aWaypoints) - 1
+        If $g_b_Vanquisher_AbortRoute Then Return
         $RangeLimit = $aWaypoints[$Index][3]
         If _Vanquisher_CheckVanquishDuringRoute($timer, " (forward)") Then Return
         AggroMoveTo($aWaypoints[$Index][0], $aWaypoints[$Index][1], $aWaypoints[$Index][2] & $ActionCounter, $aWaypoints[$Index][3])
@@ -59,6 +60,7 @@ Func MoveandAggroVQReverse($aWaypoints)
     $ActionCounter = 1
     CurrentAction("Vanquish route reverse — " & UBound($aWaypoints) & " waypoints.")
     For $Index = UBound($aWaypoints) - 1 To 0 Step -1
+        If $g_b_Vanquisher_AbortRoute Then Return
         If _Vanquisher_CheckVanquishDuringRoute($timer, " (reverse)") Then Return
         AggroMoveTo($aWaypoints[$Index][0], $aWaypoints[$Index][1], $aWaypoints[$Index][2] & $ActionCounter, $aWaypoints[$Index][3])
         $ActionCounter += 1
@@ -82,7 +84,9 @@ EndFunc
 
 Func _Vanquisher_OnVanquishComplete($a_s_Phase = "")
     UpdateVanquish()
+    If Not GetAreaVanquished() Then Return False
     CurrentAction("Vanquish complete" & $a_s_Phase & " — " & GetFoesKilled() & " killed, 0 remaining.")
+    _Vanquisher_FinishRun()
     Return True
 EndFunc
 
@@ -145,7 +149,7 @@ Func AggroMoveTo($x, $y, $s = "", $z = 1450)
 	$coordsY = DllStructGetData($lMe, "Y")
 
 	Do
-		If $DeadOnTheRun Then ExitLoop
+		If $DeadOnTheRun Or $g_b_Vanquisher_AbortRoute Then ExitLoop
 		If _Vanquisher_IsVanquishComplete() Then
 			_Vanquisher_OnVanquishComplete(" (move)")
 			Return
@@ -159,6 +163,12 @@ Func AggroMoveTo($x, $y, $s = "", $z = 1450)
 			$lDistance = GetDistance($nearestenemy, -2)
 			If $lDistance < $z And _Vanquisher_AgentID($nearestenemy) <> 0 Then
 				Fight($z, $s)
+				If $g_b_Vanquisher_AbortRoute Then Return
+				UpdateVanquish()
+				If _Vanquisher_IsVanquishComplete() Then
+					_Vanquisher_OnVanquishComplete(" (after fight)")
+					Return
+				EndIf
 				$iBlocked = 0
 				Move($x, $y, $random)
 			EndIf
