@@ -511,62 +511,108 @@ Func GetFoesKilled()
     Return World_GetWorldInfo("FoesKilled")
 EndFunc
 
+Func _Vanquisher_TryCaptureVanquishBaseline()
+    Local $l_i_Remaining = GetFoesToKill()
+    Local $l_i_Killed = GetFoesKilled()
+    If $l_i_Remaining < 0 Then Return False
+    If $l_i_Remaining > 0 Then
+        $g_i_Vanquisher_InitialFoesToKill = $l_i_Remaining
+        $g_i_Vanquisher_InitialFoesKilled = $l_i_Killed
+        $g_b_Vanquisher_CounterUnreliable = False
+        Return True
+    EndIf
+    Return False
+EndFunc
+
 Func _Vanquisher_RefreshVanquishBaseline()
     $g_i_Vanquisher_InitialFoesToKill = -1
     $g_i_Vanquisher_InitialFoesKilled = 0
-    If Not Map_GetInstanceInfo("IsExplorable") Or Not GetIsHardMode() Then Return
+    $g_b_Vanquisher_CounterUnreliable = False
+    $g_i_Vanquisher_SessionStartKilled = 0
+    If Not Map_GetInstanceInfo("IsExplorable") Then Return
+    If Not GetIsHardMode() Then
+        CurrentAction("Not in Hard Mode — enable HM in outpost (party leader).")
+        Return
+    EndIf
 
     CurrentAction("Checking vanquish counter...")
     Local $l_i_StableZeros = 0
     Local $hTimer = TimerInit()
-    While TimerDiff($hTimer) < 20000
+    While TimerDiff($hTimer) < 8000
         Local $l_i_Remaining = GetFoesToKill()
         Local $l_i_Killed = GetFoesKilled()
         If $l_i_Remaining < 0 Then
             Sleep(500)
             ContinueLoop
         EndIf
-        If $l_i_Remaining > 0 Then
-            $g_i_Vanquisher_InitialFoesToKill = $l_i_Remaining
-            $g_i_Vanquisher_InitialFoesKilled = $l_i_Killed
-            CurrentAction("Vanquish: " & $l_i_Killed & " killed, " & $l_i_Remaining & " remaining.")
+        If _Vanquisher_TryCaptureVanquishBaseline() Then
+            CurrentAction("Vanquish: " & $g_i_Vanquisher_InitialFoesKilled & " killed, " & $g_i_Vanquisher_InitialFoesToKill & " remaining.")
             Return
         EndIf
-        $l_i_StableZeros += 1
-        If $l_i_StableZeros >= 3 Then
-            $g_i_Vanquisher_InitialFoesToKill = 0
-            $g_i_Vanquisher_InitialFoesKilled = $l_i_Killed
-            CurrentAction("Vanquish: area already clear (0 foes on entry).")
-            Return
+        If $l_i_Remaining = 0 And $l_i_Killed = 0 Then
+            $l_i_StableZeros += 1
+            If $l_i_StableZeros >= 3 Then ExitLoop
+        Else
+            $l_i_StableZeros = 0
         EndIf
         Sleep(750)
     WEnd
 
-    $g_i_Vanquisher_InitialFoesToKill = GetFoesToKill()
-    If $g_i_Vanquisher_InitialFoesToKill < 0 Then $g_i_Vanquisher_InitialFoesToKill = 0
-    $g_i_Vanquisher_InitialFoesKilled = GetFoesKilled()
-    CurrentAction("Vanquish: " & $g_i_Vanquisher_InitialFoesKilled & " killed, " & $g_i_Vanquisher_InitialFoesToKill & " remaining.")
+    If _Vanquisher_TryCaptureVanquishBaseline() Then
+        CurrentAction("Vanquish: " & $g_i_Vanquisher_InitialFoesKilled & " killed, " & $g_i_Vanquisher_InitialFoesToKill & " remaining.")
+        Return
+    EndIf
+
+    $g_b_Vanquisher_CounterUnreliable = True
+    $g_i_Vanquisher_SessionStartKilled = GetFoesKilled()
+    CurrentAction("Vanquish counter unreadable — running route anyway.")
+EndFunc
+
+Func _Vanquisher_ShouldRunRoute()
+    If $g_b_Vanquisher_CounterUnreliable Then Return True
+    If $g_i_Vanquisher_InitialFoesToKill < 0 Then Return True
+    If GetFoesToKill() > 0 Then Return True
+    Return Not GetAreaVanquished()
 EndFunc
 
 Func GetAreaVanquished()
     If Not Map_GetInstanceInfo("IsExplorable") Then Return False
     If Not GetIsHardMode() Then Return False
-    If $g_i_Vanquisher_InitialFoesToKill < 0 Then Return False
+
     Local $l_i_Remaining = GetFoesToKill()
+    Local $l_i_Killed = GetFoesKilled()
     If $l_i_Remaining < 0 Then Return False
+
+    If $g_i_Vanquisher_InitialFoesToKill < 0 Then
+        If $l_i_Remaining > 0 Then
+            $g_i_Vanquisher_InitialFoesToKill = $l_i_Remaining
+            $g_i_Vanquisher_InitialFoesKilled = $l_i_Killed
+            $g_b_Vanquisher_CounterUnreliable = False
+            Return False
+        EndIf
+        Return $l_i_Remaining = 0 And $l_i_Killed > $g_i_Vanquisher_SessionStartKilled
+    EndIf
+
     If $l_i_Remaining > 0 Then Return False
-    If $g_i_Vanquisher_InitialFoesToKill = 0 Then Return True
     Local $l_i_TargetKilled = $g_i_Vanquisher_InitialFoesKilled + $g_i_Vanquisher_InitialFoesToKill
-    Return GetFoesKilled() >= $l_i_TargetKilled
+    Return $l_i_Killed >= $l_i_TargetKilled
+EndFunc
+
+Func _Vanquisher_IsAlreadyVanquishedOnEntry()
+    Return False
+EndFunc
+
+Func _Vanquisher_ResignToOutpost()
+    CurrentAction("Resigning to outpost.")
+    Chat_SendChat("resign", "/")
+    Sleep(3000)
+    WaitForLoad()
+    Return Not Map_GetInstanceInfo("IsExplorable")
 EndFunc
 
 Func _Vanquisher_ResignIfDead()
     If Death() <> 1 And Not GetIsDead(-2) Then Return False
-    CurrentAction("Dead — resigning to outpost.")
-    Chat_SendChat("resign", "/")
-    Sleep(3000)
-    WaitForLoad()
-    Return True
+    Return _Vanquisher_ResignToOutpost()
 EndFunc
 
 Func _Vanquisher_UseDeathPenaltyItems()
@@ -575,6 +621,7 @@ Func _Vanquisher_UseDeathPenaltyItems()
 EndFunc
 
 Func _Vanquisher_IsVanquishComplete()
+    If $g_b_Vanquisher_CounterUnreliable Then Return False
     Return GetAreaVanquished()
 EndFunc
 
@@ -601,25 +648,20 @@ Func _Vanquisher_ReturnToOutpost()
     If Not Map_GetInstanceInfo("IsExplorable") Then Return True
 
     CurrentAction("Returning to outpost after vanquish.")
-    If Death() = 1 Or GetIsDead(-2) Then
-        _Vanquisher_ResignIfDead()
-        $g_b_Vanquisher_DeathResignPending = False
-        If Not Map_GetInstanceInfo("IsExplorable") Then
-            _Vanquisher_UseDeathPenaltyItems()
-            CurrentAction("Back in outpost.")
-            Return True
-        EndIf
-    EndIf
-
-    If Map_GetInstanceInfo("IsExplorable") And Not GetIsDead(-2) And Death() <> 1 Then
+    If Not GetIsDead(-2) And Death() <> 1 Then
         Map_ReturnToOutpost()
         WaitForLoad()
     EndIf
 
     Local $l_i_Tries = 0
-    While Map_GetInstanceInfo("IsExplorable") And $l_i_Tries < 3
-        _Vanquisher_ResignIfDead()
+    While Map_GetInstanceInfo("IsExplorable") And $l_i_Tries < 5
+        _Vanquisher_ResignToOutpost()
         $g_b_Vanquisher_DeathResignPending = False
+        If Not Map_GetInstanceInfo("IsExplorable") Then ExitLoop
+        If $Map_To_Zone > 0 Then
+            RndTravel($Map_To_Zone)
+            WaitForLoad()
+        EndIf
         $l_i_Tries += 1
     WEnd
 

@@ -10,6 +10,8 @@ Global $RangeLimit = 1450
 Func MoveandAggroVQ($aWaypoints)
     Local $timer = TimerInit()
     $BlockCount = 20
+    $ActionCounter = 1
+    CurrentAction("Vanquish route forward — " & UBound($aWaypoints) & " waypoints.")
     For $Index = 0 To UBound($aWaypoints) - 1
         $RangeLimit = $aWaypoints[$Index][3]
         If _Vanquisher_CheckVanquishDuringRoute($timer, " (forward)") Then Return
@@ -49,6 +51,8 @@ EndFunc
 
 Func MoveandAggroVQReverse($aWaypoints)
     Local $timer = TimerInit()
+    $ActionCounter = 1
+    CurrentAction("Vanquish route reverse — " & UBound($aWaypoints) & " waypoints.")
     For $Index = UBound($aWaypoints) - 1 To 0 Step -1
         If _Vanquisher_CheckVanquishDuringRoute($timer, " (reverse)") Then Return
         AggroMoveTo($aWaypoints[$Index][0], $aWaypoints[$Index][1], $aWaypoints[$Index][2] & $ActionCounter, $aWaypoints[$Index][3])
@@ -67,18 +71,13 @@ Func MoveandAggroVQReverse($aWaypoints)
     If _Vanquisher_IsVanquishComplete() Then
         _Vanquisher_OnVanquishComplete(" (reverse end)")
     Else
-        CurrentAction("Vanquish incomplete — " & GetFoesToKill() & " foes still on map.")
-		Sleep (3600000)
+        CurrentAction("Route done — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining.")
     EndIf
 EndFunc
 
 Func _Vanquisher_OnVanquishComplete($a_s_Phase = "")
     UpdateVanquish()
-    If $g_i_Vanquisher_InitialFoesToKill = 0 And GetFoesKilled() = 0 Then
-        CurrentAction("Area already vanquished on entry" & $a_s_Phase & ".")
-    Else
-        CurrentAction("Vanquish complete" & $a_s_Phase & " — 0 foes remaining.")
-    EndIf
+    CurrentAction("Vanquish complete" & $a_s_Phase & " — " & GetFoesKilled() & " killed, 0 remaining.")
     Return True
 EndFunc
 

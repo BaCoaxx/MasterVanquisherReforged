@@ -105,4 +105,6 @@ Global $g_h_EditText = 0
 ; Vanquish baseline on zone-in (foes remaining/killed when entering the explorable)
 Global $g_i_Vanquisher_InitialFoesToKill = -1
 Global $g_i_Vanquisher_InitialFoesKilled = 0
+Global $g_b_Vanquisher_CounterUnreliable = False
+Global $g_i_Vanquisher_SessionStartKilled = 0
 Global $g_b_Vanquisher_DeathResignPending = False

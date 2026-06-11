@@ -451,16 +451,10 @@ While 1
 
 			If GetMapID() == $Map_To_Farm Then
 				If Death() = 1 Or GetIsDead(-2) Then
-					_Vanquisher_ResignIfDead()
+					_Vanquisher_ResignToOutpost()
 					$g_b_Vanquisher_DeathResignPending = False
 				Else
-					_Vanquisher_RefreshVanquishBaseline()
-					If GetAreaVanquished() Then
-						CurrentAction("Already in Map — area vanquished, returning to outpost.")
-						If _Vanquisher_ReturnToOutpost() Then $boolrun = False
-					Else
-						CurrentAction("Already in Map, starting Vanquish.")
-					EndIf
+					CurrentAction("Already in Map, starting Vanquish.")
 				EndIf
 			ElseIf GetMapID() == $Map_To_Zone Then
 				CurrentAction("Already in Outpost, heading out.")
@@ -518,18 +512,19 @@ While 1
 					If FactionCheckLuxon() Then TurnInFactionLuxon()
 			EndSwitch
 
-			If GetMapID() = $Map_To_Farm And Not GetAreaVanquished() Then
+			If GetMapID() = $Map_To_Farm Or GetMapID() = $Map_To_Zone Then
 				VQ()
+			Else
+				CurrentAction("Wrong map (id " & GetMapID() & ", need farm " & $Map_To_Farm & " or outpost " & $Map_To_Zone & ").")
 			EndIf
 			UpdateVanquish()
-			If GetAreaVanquished() Then
+			If GetAreaVanquished() And Not $g_b_Vanquisher_CounterUnreliable Then
 				CurrentAction("Area fully vanquished this run.")
-				If _Vanquisher_ReturnToOutpost() Then
-					$boolrun = False
-					CurrentAction("Vanquish finished — stopping bot.")
-				EndIf
+				_Vanquisher_ReturnToOutpost()
+				$boolrun = False
+				CurrentAction("Vanquish finished — stopping bot.")
 			ElseIf GetMapID() = $Map_To_Farm Then
-				CurrentAction("Run finished — " & GetFoesToKill() & " foes still remaining.")
+				CurrentAction("Run finished — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining.")
 			EndIf
 
 			$NumberRun = $NumberRun +1
@@ -639,7 +634,7 @@ Func CheckDeath()
 	If Not Map_GetInstanceInfo("IsExplorable") Then Return
 	If $g_b_Vanquisher_DeathResignPending Then Return
 	$g_b_Vanquisher_DeathResignPending = True
-	_Vanquisher_ResignIfDead()
+	_Vanquisher_ResignToOutpost()
 EndFunc   ;==>CheckDeath
 
 Func CheckPartyDead()
@@ -1328,7 +1323,7 @@ Func VQ()
 		EndSwitch
 
 	UpdateVanquish()
-	If GetAreaVanquished() Then
+	If _Vanquisher_IsVanquishComplete() Then
 		_Vanquisher_OnVanquishComplete(" (run)")
 	EndIf
 
