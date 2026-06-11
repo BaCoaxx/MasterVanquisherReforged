@@ -59,98 +59,48 @@ Func _Gwen_AppendCharName(ByRef $a_s_List, $a_s_Name)
     $a_s_List &= $a_s_Name
 EndFunc
 
-Func _Vanquisher_ParseCharFromTitle($a_s_Title)
-    If StringLeft($a_s_Title, 13) = "Guild Wars - " Then
-        Return StringStripWS(StringMid($a_s_Title, 14), 3)
-    EndIf
-    Return ""
-EndFunc
-
-Func _Vanquisher_IsPidInList(ByRef $a_a_Pids, $a_i_Pid)
-    For $l_i_Idx = 1 To $a_a_Pids[0]
-        If $a_a_Pids[$l_i_Idx] = $a_i_Pid Then Return True
-    Next
-    Return False
-EndFunc
-
-Func _Vanquisher_AddPid(ByRef $a_a_Pids, $a_i_Pid)
-    If $a_i_Pid = 0 Or _Vanquisher_IsPidInList($a_a_Pids, $a_i_Pid) Then Return
-    $a_a_Pids[0] += 1
-    ReDim $a_a_Pids[$a_a_Pids[0] + 1]
-    $a_a_Pids[$a_a_Pids[0]] = $a_i_Pid
-EndFunc
-
-Func _Vanquisher_CollectGWClientPids()
-    Local $l_a_Pids[1] = [0]
-    Local $l_as_ProcessList = ProcessList("gw.exe")
-
+Func _Vanquisher_AppendNamesFromProcess($a_s_Process, ByRef $a_s_Names)
+    Local $l_as_ProcessList = ProcessList($a_s_Process)
     For $l_i_Idx = 1 To $l_as_ProcessList[0][0]
-        _Vanquisher_AddPid($l_a_Pids, $l_as_ProcessList[$l_i_Idx][1])
+        Memory_Open($l_as_ProcessList[$l_i_Idx][1])
+        If $g_h_GWProcess Then _Gwen_AppendCharName($a_s_Names, Scanner_ScanForCharname())
+        Memory_Close()
+        $g_h_GWProcess = 0
     Next
-
-    ; Wine may expose the process as Gw.exe depending on prefix / launcher
-    $l_as_ProcessList = ProcessList("Gw.exe")
-    For $l_i_Idx = 1 To $l_as_ProcessList[0][0]
-        _Vanquisher_AddPid($l_a_Pids, $l_as_ProcessList[$l_i_Idx][1])
-    Next
-
-    Local $l_a_Wins = WinList("[CLASS:" & $GC_S_CLASS_DX_WINDOW & "]")
-    For $l_i_Idx = 1 To $l_a_Wins[0][0]
-        _Vanquisher_AddPid($l_a_Pids, WinGetProcess($l_a_Wins[$l_i_Idx][1]))
-    Next
-
-    $l_a_Wins = WinList("Guild Wars")
-    For $l_i_Idx = 1 To $l_a_Wins[0][0]
-        If $l_a_Wins[$l_i_Idx][0] <> "" And $l_a_Wins[$l_i_Idx][1] <> 0 Then
-            _Vanquisher_AddPid($l_a_Pids, WinGetProcess($l_a_Wins[$l_i_Idx][1]))
-        EndIf
-    Next
-
-    Return $l_a_Pids
 EndFunc
 
 Func _Vanquisher_CountGWClients()
-    Local $l_a_Pids = _Vanquisher_CollectGWClientPids()
-    Return $l_a_Pids[0]
+    Local $l_i_Count = ProcessList("gw.exe")[0][0]
+    Local $l_i_GwExe = ProcessList("Gw.exe")[0][0]
+    If $l_i_GwExe > $l_i_Count Then $l_i_Count = $l_i_GwExe
+    Local $l_a_Wins = WinList("[CLASS:" & $GC_S_CLASS_DX_WINDOW & "]")
+    If $l_a_Wins[0][0] > $l_i_Count Then $l_i_Count = $l_a_Wins[0][0]
+    Return $l_i_Count
 EndFunc
 
-Func _Vanquisher_CharNameFromPid($a_i_Pid)
-    Memory_Open($a_i_Pid)
-    If Not $g_h_GWProcess Then Return ""
-
-    Local $l_s_Char = Scanner_ScanForCharname()
-    If $l_s_Char <> "" Then
-        Memory_Close()
-        $g_h_GWProcess = 0
-        Return StringStripWS($l_s_Char, 3)
-    EndIf
-
-    Local $l_h_Win = Scanner_GetHwnd($a_i_Pid)
-    If $l_h_Win Then
-        $l_s_Char = _Vanquisher_ParseCharFromTitle(WinGetTitle($l_h_Win))
-        If $l_s_Char <> "" Then
-            Memory_Close()
-            $g_h_GWProcess = 0
-            Return $l_s_Char
-        EndIf
-    EndIf
-
-    Memory_Close()
-    $g_h_GWProcess = 0
-    Return ""
+Func _Vanquisher_GWIsRunning()
+    Return _Vanquisher_CountGWClients() > 0
 EndFunc
 
 Func Gwen_GetLoggedCharNames()
     Local $l_s_Names = ""
-    Local $l_a_Pids = _Vanquisher_CollectGWClientPids()
 
-    For $l_i_Idx = 1 To $l_a_Pids[0]
-        _Gwen_AppendCharName($l_s_Names, _Vanquisher_CharNameFromPid($l_a_Pids[$l_i_Idx]))
+    _Vanquisher_AppendNamesFromProcess("gw.exe", $l_s_Names)
+    _Vanquisher_AppendNamesFromProcess("Gw.exe", $l_s_Names)
+    If $l_s_Names <> "" Then Return $l_s_Names
+
+    Local $l_as_Array = Scanner_ScanGW()
+    For $l_i_Idx = 1 To $l_as_Array[0]
+        _Gwen_AppendCharName($l_s_Names, $l_as_Array[$l_i_Idx])
     Next
+    If $l_s_Names <> "" Then Return $l_s_Names
 
     Local $l_a_Wins = WinList("[CLASS:" & $GC_S_CLASS_DX_WINDOW & "]")
     For $l_i_Idx = 1 To $l_a_Wins[0][0]
-        _Gwen_AppendCharName($l_s_Names, _Vanquisher_ParseCharFromTitle($l_a_Wins[$l_i_Idx][0]))
+        Local $l_s_Title = $l_a_Wins[$l_i_Idx][0]
+        If StringLeft($l_s_Title, 12) = "Guild Wars -" Then
+            _Gwen_AppendCharName($l_s_Names, StringMid($l_s_Title, 14))
+        EndIf
     Next
 
     Return $l_s_Names
@@ -160,25 +110,31 @@ Func _Gwen_FindPidByCharName($a_s_Char)
     $a_s_Char = StringStripWS($a_s_Char, 3)
     If $a_s_Char = "" Then Return 0
 
-    Local $l_as_ProcessList = ProcessList("gw.exe")
-    For $l_i_Idx = 1 To $l_as_ProcessList[0][0]
-        Memory_Open($l_as_ProcessList[$l_i_Idx][1])
-        If $g_h_GWProcess Then
-            Local $l_s_Char = Scanner_ScanForCharname()
-            If $l_s_Char <> "" And StringCompare(StringStripWS($l_s_Char, 3), $a_s_Char, 0) = 0 Then
-                Memory_Close()
-                $g_h_GWProcess = 0
-                Return $l_as_ProcessList[$l_i_Idx][1]
+    Local $l_a_ProcessNames[2] = ["gw.exe", "Gw.exe"]
+    For $l_i_NameIdx = 0 To 1
+        Local $l_as_ProcessList = ProcessList($l_a_ProcessNames[$l_i_NameIdx])
+        For $l_i_Idx = 1 To $l_as_ProcessList[0][0]
+            Memory_Open($l_as_ProcessList[$l_i_Idx][1])
+            If $g_h_GWProcess Then
+                Local $l_s_Char = Scanner_ScanForCharname()
+                If $l_s_Char <> "" And StringCompare(StringStripWS($l_s_Char, 3), $a_s_Char, 0) = 0 Then
+                    Memory_Close()
+                    $g_h_GWProcess = 0
+                    Return $l_as_ProcessList[$l_i_Idx][1]
+                EndIf
             EndIf
-        EndIf
-        Memory_Close()
-        $g_h_GWProcess = 0
+            Memory_Close()
+            $g_h_GWProcess = 0
+        Next
     Next
 
     Local $l_a_Wins = WinList("[CLASS:" & $GC_S_CLASS_DX_WINDOW & "]")
     For $l_i_Idx = 1 To $l_a_Wins[0][0]
-        Local $l_s_Char = _Vanquisher_ParseCharFromTitle($l_a_Wins[$l_i_Idx][0])
-        If $l_s_Char <> "" And StringCompare($l_s_Char, $a_s_Char, 0) = 0 Then Return WinGetProcess($l_a_Wins[$l_i_Idx][1])
+        Local $l_s_Title = $l_a_Wins[$l_i_Idx][0]
+        If StringLeft($l_s_Title, 12) = "Guild Wars -" Then
+            Local $l_s_Char = StringStripWS(StringMid($l_s_Title, 14), 3)
+            If StringCompare($l_s_Char, $a_s_Char, 0) = 0 Then Return WinGetProcess($l_a_Wins[$l_i_Idx][1])
+        EndIf
     Next
 
     Return 0
@@ -187,7 +143,7 @@ EndFunc
 
 #Region Core connection
 Func Initialize($a_s_GW, $a_b_ChangeTitle = True, $a_b_Unused = True)
-    If _Vanquisher_CountGWClients() = 0 Then Return False
+    If Not _Vanquisher_GWIsRunning() Then Return False
 
     If IsString($a_s_GW) And $a_s_GW <> "" Then
         Core_Initialize($a_s_GW, $a_b_ChangeTitle)

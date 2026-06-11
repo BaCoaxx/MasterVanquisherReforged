@@ -445,8 +445,8 @@ GUICtrlSetState($Gui_HM_enable, $GUI_CHECKED)
 GUICtrlSetState($Gui_UseSkills, $GUI_CHECKED)
 GUICtrlSetState($Gui_Donate, $GUI_ENABLE)
 _Vanquisher_UpdateDonateCheckbox()
+If _Vanquisher_GWIsRunning() Then RefreshCharNames()
 GUISetState(@SW_SHOW)
-RefreshCharNames()
 
 #EndRegion ### END Koda GUI section ###
 
@@ -953,29 +953,29 @@ Func _Vanquisher_IsWine()
 EndFunc
 
 Func RefreshCharNames()
-	Local $l_i_GWCount = _Vanquisher_CountGWClients()
 	Local $l_s_Names = GetLoggedCharNames()
-	Local $l_s_WineHint = ""
 
-	If _Vanquisher_IsWine() Then
-		$l_s_WineHint = " Vanquisher must use the same WINEPREFIX as Guild Wars. Close this, then run Launchers/start_vanquisher.sh after GW is open."
-	EndIf
-
-	If $l_i_GWCount = 0 And $l_s_Names = "" Then
+	If $l_s_Names <> "" Then
 		GUICtrlSetData($txtName, "")
-		CurrentAction("No Guild Wars client found. Start GW in Wine, log in, then click R." & $l_s_WineHint)
+		GUICtrlSetData($txtName, $l_s_Names)
+		CurrentAction("Characters: " & StringReplace($l_s_Names, "|", ", "))
 		Return
 	EndIf
 
-	If $l_s_Names = "" Then
+	Local $l_i_GWCount = _Vanquisher_CountGWClients()
+	Local $l_s_Hint = ""
+	If _Vanquisher_IsWine() Then
+		$l_s_Hint = " Use the same WINEPREFIX as Guild Wars (e.g. start_vanquisher.sh 4 if GW runs on gw4)."
+	EndIf
+
+	If $l_i_GWCount = 0 Then
 		GUICtrlSetData($txtName, "")
-		CurrentAction("Found " & $l_i_GWCount & " client(s) but no character names. Log in fully, then click R." & $l_s_WineHint)
+		CurrentAction("No Guild Wars client found. Start GW, log in, then click R." & $l_s_Hint)
 		Return
 	EndIf
 
 	GUICtrlSetData($txtName, "")
-	GUICtrlSetData($txtName, $l_s_Names)
-	CurrentAction("Characters: " & StringReplace($l_s_Names, "|", ", "))
+	CurrentAction("Found " & $l_i_GWCount & " Guild Wars client(s), but could not read character names. Log in fully, then click R." & $l_s_Hint)
 EndFunc
 
 Func UpdateVanquish()
