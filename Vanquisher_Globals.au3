@@ -3,11 +3,6 @@
 
 Global Enum $INSTANCETYPE_OUTPOST = 0, $INSTANCETYPE_EXPLORABLE, $INSTANCETYPE_LOADING
 
-Global $intSkillEnergy[8] = [15, 15, 5, 5, 10, 15, 10, 5]
-Global $intSkillCastTime[8] = [1000, 1000, 750, 750, 1000, 1000, 1000, 250]
-Global $intSkillAdrenaline[8] = [0, 0, 0, 0, 0, 0, 0, 0]
-Global $totalskills = 7
-
 Global Enum $BAG_Backpack = 1, $BAG_BeltPouch, $BAG_Bag1, $BAG_Bag2, $BAG_EquipmentPack, $BAG_UnclaimedItems = 7, $BAG_Storage1, $BAG_Storage2, _
         $BAG_Storage3, $BAG_Storage4, $BAG_StorageAnniversary, $BAG_Storage5, $BAG_Storage6, $BAG_Storage7, $BAG_Storage8
 
@@ -119,6 +114,7 @@ Global Const $VANQUISHER_CONSUMABLE_BUFFER_MS = 1800000 ; 30 min between stone s
 Global Const $VANQUISHER_CONSUMABLE_DEBOUNCE_MS = 5000 ; short anti-spam after use while effect applies
 Global Const $VANQUISHER_CONSUMABLE_POLL_MS = 10000 ; check effects every 10s during movement (not every tick)
 Global Const $VANQUISHER_STONE_INTERVAL = $VANQUISHER_CONSUMABLE_BUFFER_MS
+Global $g_h_Vanquisher_FightTimer = 0
 Global $g_h_Vanquisher_ConsumablePollTimer = 0
 Global $g_h_Vanquisher_StoneTimer = 0
 Global $g_a_Vanquisher_BULastUsed[7]
@@ -138,3 +134,4 @@ Global $g_b_Vanquisher_HasRunRoute = False
 Global $g_b_Vanquisher_RunFinished = False
 Global $g_b_Vanquisher_AbortRoute = False
 Global $g_b_Vanquisher_DeathResignPending = False
+Global $g_b_Vanquisher_CombatAIReady = False

@@ -540,6 +540,17 @@ Func _Vanquisher_TryCaptureVanquishBaseline()
     Return False
 EndFunc
 
+; GwAu3 Utility AI requires Cache_SkillBar() once per explorable zone before UAI_Fight can cast or auto-attack.
+Func _Vanquisher_InitCombatAI()
+    If $g_b_Vanquisher_CombatAIReady Then Return
+    If Not Map_GetInstanceInfo("IsExplorable") Then Return
+    If Map_GetInstanceInfo("IsLoading") Then Return
+    $g_b_CacheWeaponSet = True
+    Cache_SkillBar()
+    $g_b_Vanquisher_CombatAIReady = True
+    CurrentAction("Utility AI skill bar cached.")
+EndFunc
+
 Func _Vanquisher_RefreshVanquishBaseline()
     $g_i_Vanquisher_InitialFoesToKill = -1
     $g_i_Vanquisher_InitialFoesKilled = 0
@@ -548,6 +559,7 @@ Func _Vanquisher_RefreshVanquishBaseline()
     $g_b_Vanquisher_HasRunRoute = False
     $g_b_Vanquisher_RunFinished = False
     $g_b_Vanquisher_AbortRoute = False
+    $g_b_Vanquisher_CombatAIReady = False
     $g_h_Vanquisher_ConsumablePollTimer = 0
     For $l_i_Idx = 0 To 6
         $g_a_Vanquisher_BULastUsed[$l_i_Idx] = 0
@@ -574,6 +586,7 @@ Func _Vanquisher_RefreshVanquishBaseline()
         EndIf
         If _Vanquisher_TryCaptureVanquishBaseline() Then
             CurrentAction("Vanquish: " & $g_i_Vanquisher_InitialFoesKilled & " killed, " & $g_i_Vanquisher_InitialFoesToKill & " remaining.")
+            _Vanquisher_InitCombatAI()
             Return
         EndIf
         If $l_i_Remaining = 0 And $l_i_Killed = 0 Then
@@ -587,12 +600,14 @@ Func _Vanquisher_RefreshVanquishBaseline()
 
     If _Vanquisher_TryCaptureVanquishBaseline() Then
         CurrentAction("Vanquish: " & $g_i_Vanquisher_InitialFoesKilled & " killed, " & $g_i_Vanquisher_InitialFoesToKill & " remaining.")
+        _Vanquisher_InitCombatAI()
         Return
     EndIf
 
     $g_b_Vanquisher_CounterUnreliable = True
     $g_i_Vanquisher_SessionStartKilled = GetFoesKilled()
     CurrentAction("Vanquish counter unreadable — running route anyway.")
+    _Vanquisher_InitCombatAI()
 EndFunc
 
 Func _Vanquisher_ShouldRunRoute()
