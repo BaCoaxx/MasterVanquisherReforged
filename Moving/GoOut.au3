@@ -31,7 +31,7 @@ Func GoOut()
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO3))
 				AddHero($heroToAdd)
 				Sleep(500)
-			EndIf 
+			EndIf
 
 			If $PartySize >= 6 Then
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO4))
@@ -221,12 +221,10 @@ Func GoOut()
 					Move(4600, -27863)
 					WaitForLoad()
 				Case "TearsoftheFallen"
-					MoveTo(1683, -1594)
-					Move(4600, -27863)
-					WaitForLoad()
+					GoOutTearsoftheFallen()
 				Case "TheBlackCurtain"
-					MoveTo(1683, -1594)
-					Move(4600, -27863)
+					MoveTo(-5057.52, 17188.52)
+					Move(-5205.00, 15562.00)
 					WaitForLoad()
 				Case "TwinSerpentLakes"
 					MoveTo(-20183, 10506)
@@ -501,7 +499,7 @@ Func GoOut()
 					MoveTo(4455, 4479)
 					Move(4550, 4479)
 					WaitForLoad()
-					
+
 				;Kourna
 				Case "ArkjokWard"
 					MoveTo(-470, -3677)
@@ -555,7 +553,7 @@ Func GoOut()
 					MoveTo(26313, 16414)
 					Move(26250, 16700)
 					WaitForLoad()
-					
+
 				;Vabbi
 				Case "ForumHighlands"
 					MoveTo(4572, -4533)
@@ -614,7 +612,7 @@ Func GoOut()
 					MoveTo(-4616, -1382)
 					Move(-4850, -1388)
 					WaitForLoad()
-					
+
 			;TheDesolation
 				Case "CrystalOverlook"
 					MoveTo(1683, -1594)
@@ -646,7 +644,7 @@ Func GoOut()
 					MoveTo(-4758, 4639)
 					Move(-4858, 4639)
 					WaitForLoad()
-					
+
 			;CharrHomelands
 				Case "DaladaUplands"
 					MoveTo(1683, -1594)
@@ -719,7 +717,7 @@ Func GoOut()
 			Sleep(2000)
 		Until GetMapID() = $Map_To_Farm
 	EndFunc
-	
+
 	Func InitSave()
 	;@ScriptDir & "\Build_Team"
     Local $ini_file, $workingdir

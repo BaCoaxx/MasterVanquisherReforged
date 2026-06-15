@@ -77,10 +77,11 @@ Global $StingrayStrand_Map = 63
 Global $StingrayStrand_Outpost = 19
 Global $TalmarkWilderness_Map
 Global $TalmarkWilderness_Outpost
-Global $TearsoftheFallen_Map
-Global $TearsoftheFallen_Outpost
-Global $TheBlackCurtain_Map
-Global $TheBlackCurtain_Outpost
+Global $TearsoftheFallen_Map = 53
+Global $TearsoftheFallen_Outpost = 137
+Global $TearsoftheFallen_Transit = 63
+Global $TheBlackCurtain_Map = 18
+Global $TheBlackCurtain_Outpost = 138
 Global $TwinSerpentLakes_Map = 61
 Global $TwinSerpentLakes_Outpost = 73         ;Riverside Province
 Global $WatchtowerCoast_Map
@@ -234,7 +235,7 @@ Global $TheHiddenCityOfAhdashim_Outpost = 434	;Dasha Vestibule
 Global $TheMirrorOfLyss_Map = 419
 Global $TheMirrorOfLyss_Outpost = 414					;The Kodash Bazaar
 Global $VehjinMines_Map = 397
-Global $VehjinMines_Outpost = 476						;Jennur's Horde 
+Global $VehjinMines_Outpost = 476						;Jennur's Horde
 Global $VehtendiValley_Map = 406
 Global $VehtendiValley_Outpost = 414						;The Kodash Bazaar
 Global $WildernessOfBahdza_Map = 404
