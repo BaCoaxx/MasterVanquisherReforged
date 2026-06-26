@@ -1,8 +1,8 @@
-﻿#include <Array.au3>
+#include <Array.au3>
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Local $aDeldrimorBowlOutpostPath[2][2] = [ _
+Global $aDeldrimorBowlOutpostPath[2][2] = [ _
 	[-9681, 34559], _
 	[-11100, 35350] _
 ]
@@ -48,7 +48,7 @@ Func VQDeldrimorBowl()
 	CurrentAction("Starting DeldrimorBowl vanquish route.")
 
 	Local $aWaypoints[59][4] = [ _
-		[13532, -22187], " ", $vqrange], _
+		[13532, -22187, " ", $vqrange], _
 		[14813.50, -18389.10], " ", $vqrange], _
 		[15334.20, -14363.50], " ", $vqrange], _
 		[12634.30, -11395.60], " ", $vqrange], _

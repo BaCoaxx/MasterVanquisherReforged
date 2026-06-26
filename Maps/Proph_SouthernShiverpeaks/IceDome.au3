@@ -1,13 +1,13 @@
-﻿#include <Array.au3>
+#include <Array.au3>
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Local $aIcedomeOutpostPath[2][2] = [ _
+Global $aIcedomeOutpostPath[2][2] = [ _
 	[-22815, -5378], _
 	[-23091, -5492] _
 ]
 
-Local $aIcedomeTransitPath[15][2] = [ _
+Global $aIcedomeTransitPath[15][2] = [ _
 	[20104, -13167], _
 	[19138, -10938], _
 	[18469, -8424], _
@@ -76,25 +76,25 @@ Func VQIcedome()
 	CurrentAction("Starting Icedome vanquish route.")
 
 	Local $aWaypoints[19][4] = [ _
-		[-4580, -5658], " ", $vqrange], _
-		[-7099, -3889], " ", $vqrange], _
-		[-8209, -2275], " ", $vqrange], _
-		[-6907, -750], " ", $vqrange], _
-		[-7084, 1085], " ", $vqrange], _
-		[-3831, 1230], " ", $vqrange], _
-		[-4262, 3600], " ", $vqrange], _
-		[-3086, 5099], " ", $vqrange], _
-		[-2743, 7372], " ", $vqrange], _
-		[797, 6193], " ", $vqrange], _
-		[562, 2616], " ", $vqrange], _
-		[1049, -595], " ", $vqrange], _
-		[3969, 573], " ", $vqrange], _
-		[5717, 5604], " ", $vqrange], _
-		[7635, 3729], " ", $vqrange], _
-		[7537, 1108], " ", $vqrange], _
-		[7073, -101], " ", $vqrange], _
-		[5970, -1117], " ", $vqrange], _
-		[7847, -3201], " ", $vqrange] ]
+		[-4580, -5658, " ", $vqrange], _
+		[-7099, -3889, " ", $vqrange], _
+		[-8209, -2275, " ", $vqrange], _
+		[-6907, -750, " ", $vqrange], _
+		[-7084, 1085, " ", $vqrange], _
+		[-3831, 1230, " ", $vqrange], _
+		[-4262, 3600, " ", $vqrange], _
+		[-3086, 5099, " ", $vqrange], _
+		[-2743, 7372, " ", $vqrange], _
+		[797, 6193, " ", $vqrange], _
+		[562, 2616, " ", $vqrange], _
+		[1049, -595, " ", $vqrange], _
+		[3969, 573, " ", $vqrange], _
+		[5717, 5604, " ", $vqrange], _
+		[7635, 3729, " ", $vqrange], _
+		[7537, 1108, " ", $vqrange], _
+		[7073, -101, " ", $vqrange], _
+		[5970, -1117, " ", $vqrange], _
+		[7847, -3201, " ", $vqrange] ]
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc

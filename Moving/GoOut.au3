@@ -1,5 +1,16 @@
-﻿
+
+Func _Vanquisher_IsOnTransitToFarm()
+	Switch $Title
+		Case "DiessaLowlands"
+			Return GetMapID() = $DiessaLowlands_Transit Or GetMapID() = $DiessaLowlands_Transit2
+		Case "AscalonFoothills"
+			Return GetMapID() = $AscalonFoothills_Transit
+	EndSwitch
+	Return False
+EndFunc
+
 Func GoOut()
+	If _Vanquisher_ShouldStop() Then Return
 	RndSleep(250)
 
 	If GetGoldCharacter() < 100 AND GetGoldStorage() > 100 Then
@@ -10,11 +21,13 @@ Func GoOut()
 	EndIf
 
 	CurrentAction("Going out")
+	_Vanquisher_ResetGoOutRouteProgress()
 	;Ascalon
 	Do
+		If _Vanquisher_ShouldStop() Then Return
 		If $Bool_AddHeroes Then
 			KickAllHeroes()
-			Sleep(1000)
+			_Vanquisher_CooperativeSleep(1000)
 
 			CurrentAction("Setting up Party.")
 			$PartySize = GetMaxPartySize(GetMapID())
@@ -22,37 +35,39 @@ Func GoOut()
 			If $PartySize >= 4 Then
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO1))
 				AddHero($heroToAdd)
-				Sleep(500)
+				_Vanquisher_CooperativeSleep(500)
 
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO2))
 				AddHero($heroToAdd)
-				Sleep(500)
+				_Vanquisher_CooperativeSleep(500)
 
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO3))
 				AddHero($heroToAdd)
-				Sleep(500)
+				_Vanquisher_CooperativeSleep(500)
 			EndIf
 
 			If $PartySize >= 6 Then
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO4))
 				AddHero($heroToAdd)
-				Sleep(500)
+				_Vanquisher_CooperativeSleep(500)
 
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO5))
 				AddHero($heroToAdd)
-				Sleep(500)
+				_Vanquisher_CooperativeSleep(500)
 			EndIf
 
 			If $PartySize = 8 Then
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO6))
 				AddHero($heroToAdd)
-				Sleep(500)
+				_Vanquisher_CooperativeSleep(500)
 
 				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO7))
 				AddHero($heroToAdd)
 			EndIf
 
 			CurrentAction("Party Setup")
+			ReDim $heroNumberWithRez[0]
+			CacheHeroesWithRez()
 		Else
 			CurrentAction("Skipped Party Setup")
 		EndIf
@@ -62,9 +77,7 @@ Func GoOut()
 			Case "AscalonFoothills"
 				GoOutAscalonFoothills()
 				Case "DiessaLowlands"
-					MoveTo(9342, 4942)
-					Move(9240, 3985)
-					WaitForLoad()
+					GoOutDiessaLowlands()
 				Case "DragonsGullet"
 					MoveTo(945, 14173)
 					Move(2341, 13416)
@@ -124,13 +137,9 @@ Func GoOut()
 					Move(4600, -27863)
 					WaitForLoad()
 				Case "EttinsBack"
-					MoveTo(1683, -1594)
-					Move(4600, -27863)
-					WaitForLoad()
+					GoOutEttinsBack()
 				Case "MamnoonLagoon"
-					MoveTo(1683, -1594)
-					Move(4600, -27863)
-					WaitForLoad()
+					GoOutMamnoonLagoon()
 				Case "ReedBog"
 					MoveTo(1683, -1594)
 					Move(4600, -27863)
@@ -256,9 +265,7 @@ Func GoOut()
 					Move(4600, -27863)
 					WaitForLoad()
 				Case "LornarsPass"
-					MoveTo(1683, -1594)
-					Move(4600, -27863)
-					WaitForLoad()
+					GoOutLornarsPass()
 				Case "MineralSprings"
 					MoveTo(1683, -1594)
 					Move(4600, -27863)
@@ -273,7 +280,7 @@ Func GoOut()
 					WaitForLoad()
 				Case "TalusChute"
 					Move(59.88, 10522.75)
-					Sleep(250)
+					_Vanquisher_CooperativeSleep(250)
 					Move(-25.37, 10672.75)
 					WaitForLoad()
 				Case "TascasDemise"
@@ -283,13 +290,13 @@ Func GoOut()
 				Case "WitmansFolly"
 					MoveTo(4869, 3423)
 					Move(5800, 1400)
-					Sleep(5000)
+					_Vanquisher_CooperativeSleep(5000)
 					WaitForLoad()
 			;RingOfFireIsland
 				Case "PerditionRock"
 					MoveTo(3603, -10090)
 					Move(3800, -8600)
-					Sleep(1000)
+					_Vanquisher_CooperativeSleep(1000)
 					WaitForLoad()
 			;ShingJeaIsland
 				Case "HaijuLagoon"
@@ -331,7 +338,7 @@ Func GoOut()
 					Dialog(0x7F)
 					Dialog(0x800009)
 					Dialog(0x80000B)
-					Sleep(1000)
+					_Vanquisher_CooperativeSleep(1000)
 					WaitForLoad()
 			;KainengCity
 				Case "BukdekByway"
@@ -392,7 +399,7 @@ Func GoOut()
 				Case "DrazachThicket"
 					MoveTo(-4557, 13723)
 					Move(-6300, 14400)
-					Sleep(10000)
+					_Vanquisher_CooperativeSleep(10000)
 					WaitForLoad()
 				Case "Ferndale"
 					MoveTo(7810, -726)
@@ -439,7 +446,7 @@ Func GoOut()
 					MoveTo(1059, 23549)
 					MoveTo(2750, 24727)
 					Move(4300, 25800)
-					Sleep(3000)
+					_Vanquisher_CooperativeSleep(3000)
 					WaitForLoad()
 				Case "MountQinkai"
 					MoveTo(-5206, 13154)
@@ -579,7 +586,7 @@ Func GoOut()
 					Sleep (1000)
 					Dialog(0x00000081)
 					Dialog(0x00000084)
-					Sleep(1000)
+					_Vanquisher_CooperativeSleep(1000)
 					WaitForLoad()
 				Case "TheMirrorOfLyss"
 					MoveTo(-3336, 1102)
@@ -645,17 +652,11 @@ Func GoOut()
 
 			;CharrHomelands
 				Case "DaladaUplands"
-					MoveTo(1683, -1594)
-					Move(4600, -27863)
-					WaitForLoad()
+					GoOutDaladaUplands()
 				Case "GrothmarWardowns"
-					MoveTo(1683, -1594)
-					Move(4600, -27863)
-					WaitForLoad()
+					GoOutGrothmarWardowns()
 				Case "SacnothValley"
-					MoveTo(1683, -1594)
-					Move(4600, -27863)
-					WaitForLoad()
+					GoOutSacnothValley()
 			;FarShiverpeaks
 				Case "BjoraMarches"
 					MoveTo(1683, -1594)
@@ -712,8 +713,8 @@ Func GoOut()
 					Move(4600, -27863)
 					WaitForLoad()
 			EndSwitch
-			Sleep(2000)
-		Until GetMapID() = $Map_To_Farm
+			RndSleep(2000)
+		Until GetMapID() = $Map_To_Farm Or _Vanquisher_ShouldStop()
 	EndFunc
 
 	Func InitSave()

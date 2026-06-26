@@ -1,5 +1,5 @@
 #include <Array.au3>
-Local $vqrange = 1450
+Global $vqrange = 1450
 Global $ActionCounter = 1
 
 Func VQSunquaVale()

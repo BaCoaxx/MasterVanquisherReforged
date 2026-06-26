@@ -1,13 +1,13 @@
-﻿#include <Array.au3>
+#include <Array.au3>
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Local $aGriffonsMouthOutpostPath[2][2] = [ _
+Global $aGriffonsMouthOutpostPath[2][2] = [ _
 	[-1453.60, 24938.46], _
 	[-4334.29, 26859.33] _
 ]
 
-Local $aGriffonsMouthTransitPath[8][2] = [ _
+Global $aGriffonsMouthTransitPath[8][2] = [ _
 	[-2324, -5061], _
 	[98, -2686], _
 	[4808, -1046], _
@@ -69,35 +69,35 @@ Func VQGriffonsMouth()
 	CurrentAction("Starting GriffonsMouth vanquish route.")
 
 	Local $aWaypoints[29][4] = [ _
-		[-2913, -7105], " ", $vqrange], _
-		[-570, -6574], " ", $vqrange], _
-		[1535, -4368], " ", $vqrange], _
-		[3009, -6002], " ", $vqrange], _
-		[5547, -3291], " ", $vqrange], _
-		[6196, -356], " ", $vqrange], _
-		[5998, -3834], " ", $vqrange], _
-		[5162, -7264], " ", $vqrange], _
-		[6002, -3706], " ", $vqrange], _
-		[3041, -6006], " ", $vqrange], _
-		[1692, -3331], " ", $vqrange], _
-		[762, -1374], " ", $vqrange], _
-		[-2270, -1127], " ", $vqrange], _
-		[-1849, -4314], " ", $vqrange], _
-		[-2464, -1537], " ", $vqrange], _
-		[-5098, -977], " ", $vqrange], _
-		[-7529, 905], " ", $vqrange], _
-		[-6410, 3478], " ", $vqrange], _
-		[-3518, 5166], " ", $vqrange], _
-		[-2345, 4080], " ", $vqrange], _
-		[1349, 2834], " ", $vqrange], _
-		[-1156, 3651], " ", $vqrange], _
-		[-367, 6241], " ", $vqrange], _
-		[-961, 8115], " ", $vqrange], _
-		[-3406, 6831], " ", $vqrange], _
-		[-1159, 8115], " ", $vqrange], _
-		[597, 6595], " ", $vqrange], _
-		[3032, 8331], " ", $vqrange], _
-		[6586, 5423], " ", $vqrange] ]
+		[-2913, -7105, " ", $vqrange], _
+		[-570, -6574, " ", $vqrange], _
+		[1535, -4368, " ", $vqrange], _
+		[3009, -6002, " ", $vqrange], _
+		[5547, -3291, " ", $vqrange], _
+		[6196, -356, " ", $vqrange], _
+		[5998, -3834, " ", $vqrange], _
+		[5162, -7264, " ", $vqrange], _
+		[6002, -3706, " ", $vqrange], _
+		[3041, -6006, " ", $vqrange], _
+		[1692, -3331, " ", $vqrange], _
+		[762, -1374, " ", $vqrange], _
+		[-2270, -1127, " ", $vqrange], _
+		[-1849, -4314, " ", $vqrange], _
+		[-2464, -1537, " ", $vqrange], _
+		[-5098, -977, " ", $vqrange], _
+		[-7529, 905, " ", $vqrange], _
+		[-6410, 3478, " ", $vqrange], _
+		[-3518, 5166, " ", $vqrange], _
+		[-2345, 4080, " ", $vqrange], _
+		[1349, 2834, " ", $vqrange], _
+		[-1156, 3651, " ", $vqrange], _
+		[-367, 6241, " ", $vqrange], _
+		[-961, 8115, " ", $vqrange], _
+		[-3406, 6831, " ", $vqrange], _
+		[-1159, 8115, " ", $vqrange], _
+		[597, 6595, " ", $vqrange], _
+		[3032, 8331, " ", $vqrange], _
+		[6586, 5423, " ", $vqrange] ]
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc

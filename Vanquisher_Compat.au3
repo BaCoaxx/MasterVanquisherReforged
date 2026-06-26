@@ -1,4 +1,15 @@
 #include-once
+
+; Central stop check used by movement and GoOut routines.
+; Keeps routes from continuing after the GUI/run state has been stopped.
+Func _Vanquisher_ShouldStop()
+    Global $boolrun, $g_b_Vanquisher_AbortRoute, $g_b_Vanquisher_RunFinished
+    If Not $boolrun Then Return True
+    If $g_b_Vanquisher_AbortRoute Then Return True
+    If $g_b_Vanquisher_RunFinished Then Return True
+    Return False
+EndFunc
+
 ; Legacy GWA/GWToolbox-style aliases for Master Vanquisher on top of GwAu3.
 
 #Region Agent struct cache
@@ -59,14 +70,80 @@ Func _Gwen_AppendCharName(ByRef $a_s_List, $a_s_Name)
     $a_s_List &= $a_s_Name
 EndFunc
 
+Func _Gwen_CharNameFromWindowTitle($a_s_Title)
+    $a_s_Title = StringStripWS($a_s_Title, 3)
+    If $a_s_Title = "" Then Return ""
+    If StringRegExp($a_s_Title, "(?i)^Guild Wars\s*$") Then Return ""
+
+    Local $a_Parts = StringRegExp($a_s_Title, "(?i)^Guild Wars\s*[-\x2013\x2014]\s*(.+)$", 3)
+    If IsArray($a_Parts) And UBound($a_Parts) >= 1 And $a_Parts[0] <> "" Then
+        Return StringStripWS($a_Parts[0], 3)
+    EndIf
+
+    Return ""
+EndFunc
+
+Func _Gwen_AppendCharNameFromHwnd(ByRef $a_s_Names, $a_h_Wnd)
+    If $a_h_Wnd = 0 Or Not WinExists($a_h_Wnd) Then Return
+    Local $l_s_Char = _Gwen_CharNameFromWindowTitle(WinGetTitle($a_h_Wnd))
+    If $l_s_Char <> "" Then _Gwen_AppendCharName($a_s_Names, $l_s_Char)
+EndFunc
+
+Func _Gwen_AppendNamesFromWindows(ByRef $a_s_Names)
+    Local $l_a_Lists[2] = ["[CLASS:" & $GC_S_CLASS_DX_WINDOW & "]", "[REGEXPTITLE:(?i)^Guild Wars]"]
+    For $l_i_List = 0 To 1
+        Local $l_a_Wins = WinList($l_a_Lists[$l_i_List])
+        For $l_i_Idx = 1 To $l_a_Wins[0][0]
+            _Gwen_AppendCharNameFromHwnd($a_s_Names, $l_a_Wins[$l_i_Idx][1])
+        Next
+    Next
+
+    Local $l_a_ProcessNames[2] = ["gw.exe", "Gw.exe"]
+    For $l_i_NameIdx = 0 To 1
+        Local $l_as_ProcessList = ProcessList($l_a_ProcessNames[$l_i_NameIdx])
+        For $l_i_Idx = 1 To $l_as_ProcessList[0][0]
+            Local $l_h_Wnd = Scanner_GetHwnd($l_as_ProcessList[$l_i_Idx][1])
+            If $l_h_Wnd Then _Gwen_AppendCharNameFromHwnd($a_s_Names, $l_h_Wnd)
+        Next
+    Next
+EndFunc
+
 Func _Vanquisher_AppendNamesFromProcess($a_s_Process, ByRef $a_s_Names)
     Local $l_as_ProcessList = ProcessList($a_s_Process)
     For $l_i_Idx = 1 To $l_as_ProcessList[0][0]
+        If IsFunc("_Vanquisher_PumpGUI") Then _Vanquisher_PumpGUI()
         Memory_Open($l_as_ProcessList[$l_i_Idx][1])
-        If $g_h_GWProcess Then _Gwen_AppendCharName($a_s_Names, Scanner_ScanForCharname())
+        If $g_h_GWProcess And Scanner_InitializeSections() And Scanner_ScanForCharname() Then
+            _Gwen_AppendCharName($a_s_Names, Player_GetCharName())
+        EndIf
         Memory_Close()
         $g_h_GWProcess = 0
     Next
+EndFunc
+
+Func _Vanquisher_GetGwWindowTitles()
+    Local $l_s_Titles = ""
+    Local $l_a_Wins = WinList("[REGEXPTITLE:(?i)^Guild Wars]")
+    For $l_i_Idx = 1 To $l_a_Wins[0][0]
+        If $l_s_Titles <> "" Then $l_s_Titles &= " | "
+        $l_s_Titles &= "'" & WinGetTitle($l_a_Wins[$l_i_Idx][1]) & "'"
+    Next
+    If $l_s_Titles = "" Then Return "(no Guild Wars windows)"
+    Return $l_s_Titles
+EndFunc
+
+Func _Vanquisher_CharIniPath()
+    Return @ScriptDir & "\Vanquisher.ini"
+EndFunc
+
+Func _Vanquisher_LoadLastCharacter()
+    Return IniRead(_Vanquisher_CharIniPath(), "Character", "LastName", "")
+EndFunc
+
+Func _Vanquisher_SaveLastCharacter($a_s_Name)
+    $a_s_Name = StringStripWS($a_s_Name, 3)
+    If $a_s_Name = "" Then Return
+    IniWrite(_Vanquisher_CharIniPath(), "Character", "LastName", $a_s_Name)
 EndFunc
 
 Func _Vanquisher_CountGWClients()
@@ -101,6 +178,9 @@ EndFunc
 Func Gwen_GetLoggedCharNames()
     Local $l_s_Names = ""
 
+    _Gwen_AppendNamesFromWindows($l_s_Names)
+    If $l_s_Names <> "" Then Return $l_s_Names
+
     _Vanquisher_AppendNamesFromProcess("gw.exe", $l_s_Names)
     _Vanquisher_AppendNamesFromProcess("Gw.exe", $l_s_Names)
     If $l_s_Names <> "" Then Return $l_s_Names
@@ -111,26 +191,13 @@ Func Gwen_GetLoggedCharNames()
     Next
     If $l_s_Names <> "" Then Return $l_s_Names
 
-    Local $l_a_Wins = WinList("[CLASS:" & $GC_S_CLASS_DX_WINDOW & "]")
-    For $l_i_Idx = 1 To $l_a_Wins[0][0]
-        Local $l_s_Title = $l_a_Wins[$l_i_Idx][0]
-        If StringLeft($l_s_Title, 12) = "Guild Wars -" Then
-            _Gwen_AppendCharName($l_s_Names, StringMid($l_s_Title, 14))
-        EndIf
-    Next
-
+    _Gwen_AppendNamesFromWindows($l_s_Names)
     Return $l_s_Names
 EndFunc
 
 Func Gwen_GetCharNamesFromWindowsOnly()
     Local $l_s_Names = ""
-    Local $l_a_Wins = WinList("[CLASS:" & $GC_S_CLASS_DX_WINDOW & "]")
-    For $l_i_Idx = 1 To $l_a_Wins[0][0]
-        Local $l_s_Title = $l_a_Wins[$l_i_Idx][0]
-        If StringLeft($l_s_Title, 12) = "Guild Wars -" Then
-            _Gwen_AppendCharName($l_s_Names, StringMid($l_s_Title, 14))
-        EndIf
-    Next
+    _Gwen_AppendNamesFromWindows($l_s_Names)
     Return $l_s_Names
 EndFunc
 
@@ -143,8 +210,8 @@ Func _Gwen_FindPidByCharName($a_s_Char)
         Local $l_as_ProcessList = ProcessList($l_a_ProcessNames[$l_i_NameIdx])
         For $l_i_Idx = 1 To $l_as_ProcessList[0][0]
             Memory_Open($l_as_ProcessList[$l_i_Idx][1])
-            If $g_h_GWProcess Then
-                Local $l_s_Char = Scanner_ScanForCharname()
+            If $g_h_GWProcess And Scanner_InitializeSections() And Scanner_ScanForCharname() Then
+                Local $l_s_Char = Player_GetCharName()
                 If $l_s_Char <> "" And StringCompare(StringStripWS($l_s_Char, 3), $a_s_Char, 0) = 0 Then
                     Memory_Close()
                     $g_h_GWProcess = 0
@@ -156,13 +223,10 @@ Func _Gwen_FindPidByCharName($a_s_Char)
         Next
     Next
 
-    Local $l_a_Wins = WinList("[CLASS:" & $GC_S_CLASS_DX_WINDOW & "]")
+    Local $l_a_Wins = WinList("[REGEXPTITLE:(?i)^Guild Wars]")
     For $l_i_Idx = 1 To $l_a_Wins[0][0]
-        Local $l_s_Title = $l_a_Wins[$l_i_Idx][0]
-        If StringLeft($l_s_Title, 12) = "Guild Wars -" Then
-            Local $l_s_Char = StringStripWS(StringMid($l_s_Title, 14), 3)
-            If StringCompare($l_s_Char, $a_s_Char, 0) = 0 Then Return WinGetProcess($l_a_Wins[$l_i_Idx][1])
-        EndIf
+        Local $l_s_Char = _Gwen_CharNameFromWindowTitle(WinGetTitle($l_a_Wins[$l_i_Idx][1]))
+        If $l_s_Char <> "" And StringCompare($l_s_Char, $a_s_Char, 0) = 0 Then Return WinGetProcess($l_a_Wins[$l_i_Idx][1])
     Next
 
     Return 0

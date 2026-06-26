@@ -113,6 +113,7 @@ Global Const $VANQUISHER_STONE_MODEL_IDS[] = [ _
 Global Const $VANQUISHER_CONSUMABLE_BUFFER_MS = 1800000 ; 30 min between stone summons while pet is alive
 Global Const $VANQUISHER_CONSUMABLE_DEBOUNCE_MS = 5000 ; short anti-spam after use while effect applies
 Global Const $VANQUISHER_CONSUMABLE_POLL_MS = 10000 ; check effects every 10s during movement (not every tick)
+Global Const $VANQUISHER_REZ_COMBAT_WAIT_MS = 30000 ; max wait for party rez during aggro movement
 Global Const $VANQUISHER_STONE_INTERVAL = $VANQUISHER_CONSUMABLE_BUFFER_MS
 Global $g_h_Vanquisher_FightTimer = 0
 Global $g_h_Vanquisher_ConsumablePollTimer = 0

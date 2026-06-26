@@ -1,4 +1,4 @@
-﻿;Ascalon IDs
+;Ascalon IDs
 Global $AscalonFoothills_Map = 103
 Global $AscalonFoothills_Outpost = 134         ;Yak's Bend to have a 6 man party
 Global $AscalonFoothills_Transit = 99          ;Traveler's Vale
@@ -37,10 +37,11 @@ Global $TravelersVale_Outpost = 134            ;Yak's Bend
 ;Maguuma IDs
 Global $DryTop_Map
 Global $DryTop_Outpost
-Global $EttinsBack_Map
-Global $EttinsBack_Outpost
-Global $MamnoonLagoon_Map
-Global $MamnoonLagoon_Outpost
+Global $EttinsBack_Map = 44
+Global $EttinsBack_Outpost = 142               ;Quarrel Falls
+Global $MamnoonLagoon_Map = 42
+Global $MamnoonLagoon_Outpost = 142            ;Quarrel Falls
+Global $MamnoonLagoon_Transit = 43             ;Silverwood
 Global $ReedBog_Map
 Global $ReedBog_Outpost
 Global $SageLands_Map = 41
@@ -103,8 +104,10 @@ Global $IceFloe_Map
 Global $IceFloe_Outpost
 Global $Icedome_Map
 Global $Icedome_Outpost =2
-Global $LornarsPass_Map
-Global $LornarsPass_Outpost
+Global $LornarsPass_Map = 90
+Global $LornarsPass_Outpost = 133              ;Beacon's Perch
+Global $LornarsPass_Transit = 88               ;Iron Horse Mine
+Global $LornarsPass_Transit2 = 91              ;Snake Dance
 Global $MineralSprings_Map
 Global $MineralSprings_Outpost
 Global $SnakeDance_Map
@@ -252,37 +255,38 @@ Global $YatendiCanyons_Outpost = 378 					;Wehhan Terraces
 Global $CrystalOverlook_Map
 Global $CrystalOverlook_Outpost
 Global $JokosDomain_Map =437
-Global $JokosDomain_Outpost =545
-Global $PoisonedOutcrops_Map
-Global $PoisonedOutcrops_Outpost
-Global $TheAlkaliPan_Map
-Global $TheAlkaliPan_Outpost
-Global $TheRupturedHeart_Map
-Global $TheRupturedHeart_Outpost
-Global $TheShatteredRavines_Map
-Global $TheShatteredRavines_Outpost
+Global $JokosDomain_Outpost = 438              ;Bone Palace
+Global $PoisonedOutcrops_Map = 443
+Global $PoisonedOutcrops_Outpost = 442         ;Lair of the Forgotten
+Global $TheAlkaliPan_Map = 446
+Global $TheAlkaliPan_Outpost = 480             ;Ruins of Morah
+Global $TheRupturedHeart_Map = 439
+Global $TheRupturedHeart_Outpost = 440         ;The Mouth of Torment
+Global $TheShatteredRavines_Map = 441
+Global $TheShatteredRavines_Outpost = 442      ;Lair of the Forgotten
 Global $TheSulfurousWastes_Map = 444
 Global $TheSulfurousWastes_Outpost = 478 			;Gate of Desolation
 ;CharrHomelands IDs
-Global $DaladaUplands_Map
-Global $DaladaUplands_Outpost
-Global $GrothmarWardowns_Map
-Global $GrothmarWardowns_Outpost
-Global $SacnothValley_Map
-Global $SacnothValley_Outpost
+Global $DaladaUplands_Map = 647
+Global $DaladaUplands_Outpost = 648            ;Doomlore Shrine
+Global $GrothmarWardowns_Map = 649
+Global $GrothmarWardowns_Outpost = 650         ;Longeye's Ledge
+Global $SacnothValley_Map = 651
+Global $SacnothValley_Outpost = 648            ;Doomlore Shrine
+Global $SacnothValley_Transit = 647            ;Dalada Uplands
 ;FarShiverpeaks IDs
 Global $BjoraMarches_Map
 Global $BjoraMarches_Outpost
-Global $DrakkarLake_Map
-Global $DrakkarLake_Outpost
+Global $DrakkarLake_Map = 513
+Global $DrakkarLake_Outpost = 644              ;Gunnar's Hold
 Global $IceCliffChasms_Map
 Global $IceCliffChasms_Outpost
-Global $JagaMoraine_Map
-Global $JagaMoraine_Outpost
+Global $JagaMoraine_Map = 546
+Global $JagaMoraine_Outpost = 645              ;Olafstead
 Global $NorrhartDomains_Map
 Global $NorrhartDomains_Outpost
-Global $VarajarFells_Map
-Global $VarajarFells_Outpost
+Global $VarajarFells_Map = 553
+Global $VarajarFells_Outpost = 650             ;Longeye's Ledge
 ;TarnishedCoast IDs
 Global $ArborBay_Map = 485
 Global $ArborBay_Outpost = 624
@@ -292,7 +296,7 @@ Global $MagusStones_Map = 569
 Global $MagusStones_Outpost = 640
 Global $RivenEarth_Map = 501
 Global $RivenEarth_Outpost = 640
-Global $SparkflySwamp_Map
-Global $SparkflySwamp_Outpost
-Global $VerdantCascades_Map
-Global $VerdantCascades_Outpost
+Global $SparkflySwamp_Map = 558
+Global $SparkflySwamp_Outpost = 638            ;Gadd's Encampment
+Global $VerdantCascades_Map = 566
+Global $VerdantCascades_Outpost = 642         ;Eye of the North

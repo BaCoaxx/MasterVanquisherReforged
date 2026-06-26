@@ -21,6 +21,7 @@
 #include <ComboConstants.au3>
 #include <SliderConstants.au3>
 #include <TabConstants.au3>
+#include <ListViewConstants.au3>
 #include <AVIConstants.au3>
 #include <GUIListBox.au3>
 #include <GuiListView.au3>

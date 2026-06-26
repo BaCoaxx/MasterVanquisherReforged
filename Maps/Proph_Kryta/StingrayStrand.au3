@@ -2,7 +2,7 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Local $aStingrayOutpostPath[2][2] = [ _
+Global $aStingrayOutpostPath[2][2] = [ _
 	[-21997, 6159], _
 	[-23033, 7201] _
 ]

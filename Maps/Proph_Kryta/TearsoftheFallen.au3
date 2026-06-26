@@ -2,12 +2,12 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Local $aTearsOutpostPath[2][2] = [ _
+Global $aTearsOutpostPath[2][2] = [ _
 	[2043, 11028], _
 	[1795, 11698] _
 ]
 
-Local $aTearsTransitPath[7][2] = [ _
+Global $aTearsTransitPath[7][2] = [ _
 	[1606, 13394], _
 	[-4298, 17149], _
 	[-5176, 20570], _
