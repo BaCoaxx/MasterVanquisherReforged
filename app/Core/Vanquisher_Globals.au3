@@ -129,6 +129,11 @@ Global $g_a_Vanquisher_ConsetLastUsed[3]
 
 Global $g_h_EditText = 0
 
+; Character/client attach (AscEnd-style GwAu3 integration)
+Global Const $doLoadLoggedChars = True
+Global $ProcessID = ""
+Global $Bot_Core_Initialized = False
+
 ; Legacy GWA/GWAPI names still referenced by some launcher builds (e.g. Gw2Auto_Reforged.au3)
 Global $nHandle = 0
 Global $nPID = 0

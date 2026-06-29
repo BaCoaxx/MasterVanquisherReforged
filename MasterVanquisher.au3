@@ -2,6 +2,8 @@
 #NoTrayIcon
 #include "app\Core\Linker.au3"
 
+Core_AutoStart()
+
 global $DeadOnTheRun = 0
 Global $GWA_CONST_UnyieldingAura=268
 Global $SS_begin, $LB_begin, $Asura_begin, $Deldrimor_begin, $Norn_begin, $Vanguard_begin, $Kurzick_begin, $Luxon_begin

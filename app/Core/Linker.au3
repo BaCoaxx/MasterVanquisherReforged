@@ -39,6 +39,15 @@
 #include "Vanquisher_Compat.au3"
 #include "GwAu3_AddOns.au3"
 
+; Command line: -character <name> (AscEnd-style auto-attach)
+For $l_i_Cmd = 1 To $CmdLine[0]
+    If $CmdLine[$l_i_Cmd] = "-character" And $l_i_Cmd < $CmdLine[0] Then
+        $g_s_MainCharName = $CmdLine[$l_i_Cmd + 1]
+        $g_bAutoStart = True
+        ExitLoop
+    EndIf
+Next
+
 #include "..\GUI\GUI.au3"
 
 #include "..\Maps\LocationsIDS.au3"

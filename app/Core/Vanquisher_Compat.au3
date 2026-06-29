@@ -611,7 +611,7 @@ Func _Vanquisher_AgentHP($a_v_Agent)
 EndFunc
 
 Func GetLoggedCharNames()
-    Return Gwen_GetLoggedCharNames()
+    Return Scanner_GetLoggedCharNames()
 EndFunc
 
 Func GetFoesToKill()
