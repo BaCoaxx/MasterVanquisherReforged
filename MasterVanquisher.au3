@@ -15,17 +15,20 @@ Global $Abandonquest = False
 
 While 1
 	If $boolrun = true Then
-		If $NumberRun = 0 Then ;first run
-			AdlibRegister("status", 1000)
-			$TimerTotal = TimerInit()
-			$SS_begin = GetSunspearTitle()
-			$LB_begin = GetLightbringerTitle()
-			$Asura_begin = GetAsuraTitle()
-			$Deldrimor_begin = GetDeldrimorTitle()
-			$Norn_begin = GetNornTitle()
-			$Vanguard_begin = GetVanguardTitle()
-			$Kurzick_begin =  GetKurzickFaction()
-			$Luxon_begin = GetLuxonFaction()
+		If $NumberRun = 0 Then ;first run or next zone in queue
+			If Not $g_b_Vanquisher_SessionStarted Then
+				AdlibRegister("status", 1000)
+				$TimerTotal = TimerInit()
+				$SS_begin = GetSunspearTitle()
+				$LB_begin = GetLightbringerTitle()
+				$Asura_begin = GetAsuraTitle()
+				$Deldrimor_begin = GetDeldrimorTitle()
+				$Norn_begin = GetNornTitle()
+				$Vanguard_begin = GetVanguardTitle()
+				$Kurzick_begin =  GetKurzickFaction()
+				$Luxon_begin = GetLuxonFaction()
+				$g_b_Vanquisher_SessionStarted = True
+			EndIf
 
 			Switch $Title
 				Case "AscalonFoothills"
@@ -535,7 +538,11 @@ While 1
 				CurrentAction("Run finished — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining.")
 			EndIf
 
-			$NumberRun = $NumberRun +1
+			If Not $g_b_Vanquisher_QueueAdvanced Then
+				$NumberRun = $NumberRun + 1
+			Else
+				$g_b_Vanquisher_QueueAdvanced = False
+			EndIf
 
 		Sleep(50)
 

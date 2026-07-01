@@ -1,5 +1,5 @@
 #include-once
-Global $g_a_VanquisherZones[1][4]
+Global $g_a_VanquisherZones[1][5]
 Global $g_i_VanquisherZoneCount = 0
 
 Func _Vanquisher_InitZones()
@@ -9,15 +9,15 @@ Func _Vanquisher_InitZones()
     Global $g_a_VanquisherZones, $g_i_VanquisherZoneCount
     ; Zone order follows Core/Linker.au3 / Maps folder order: Prophecies, Factions, Nightfall, EotN.
     Local $sData = _
-        "AscalonFoothills|ASCALON FOOTHILLS|Prophecies|0" & @CRLF & _
-        "DiessaLowlands|DIESSA LOWLANDS|Prophecies|0" & @CRLF & _
-        "DragonsGullet|DRAGON''S GULLET|Prophecies|0" & @CRLF & _
-        "EasternFrontier|EASTERN FRONTIER|Prophecies|0" & @CRLF & _
-        "FlameTempleCorridor|FLAME TEMPLE CORRIDOR|Prophecies|0" & @CRLF & _
-        "OldAscalon|OLD ASCALON|Prophecies|0" & @CRLF & _
-        "PockmarkFlats|POCKMARK FLATS|Prophecies|0" & @CRLF & _
-        "RegentValley|REGENT VALLEY|Prophecies|0" & @CRLF & _
-        "TheBreach|THE BREACH|Prophecies|0" & @CRLF & _
+        "AscalonFoothills|ASCALON FOOTHILLS|Prophecies|0|Ascalon" & @CRLF & _
+        "DiessaLowlands|DIESSA LOWLANDS|Prophecies|0|Ascalon" & @CRLF & _
+        "DragonsGullet|DRAGON''S GULLET|Prophecies|0|Ascalon" & @CRLF & _
+        "EasternFrontier|EASTERN FRONTIER|Prophecies|0|Ascalon" & @CRLF & _
+        "FlameTempleCorridor|FLAME TEMPLE CORRIDOR|Prophecies|0|Ascalon" & @CRLF & _
+        "OldAscalon|OLD ASCALON|Prophecies|0|Ascalon" & @CRLF & _
+        "PockmarkFlats|POCKMARK FLATS|Prophecies|0|Ascalon" & @CRLF & _
+        "RegentValley|REGENT VALLEY|Prophecies|0|Ascalon" & @CRLF & _
+        "TheBreach|THE BREACH|Prophecies|0|Ascalon" & @CRLF & _
         "AnvilRock|ANVIL ROCK|Prophecies|0" & @CRLF & _
         "DeldrimorBowl|DELDRIMOR BOWL|Prophecies|0" & @CRLF & _
         "GriffonsMouth|GRIFFON''S MOUTH|Prophecies|0" & @CRLF & _
@@ -151,7 +151,7 @@ Func _Vanquisher_InitZones()
         If StringStripWS($aLines[$i], 3) <> "" Then $iCount += 1
     Next
     $g_i_VanquisherZoneCount = $iCount
-    ReDim $g_a_VanquisherZones[$g_i_VanquisherZoneCount][4]
+    ReDim $g_a_VanquisherZones[$g_i_VanquisherZoneCount][5]
     Local $iZone = 0
     For $i = 1 To $aLines[0]
         If StringStripWS($aLines[$i], 3) = "" Then ContinueLoop
@@ -160,6 +160,7 @@ Func _Vanquisher_InitZones()
         $g_a_VanquisherZones[$iZone][1] = $aP[1]
         $g_a_VanquisherZones[$iZone][2] = $aP[2]
         $g_a_VanquisherZones[$iZone][3] = Number($aP[3])
+        $g_a_VanquisherZones[$iZone][4] = UBound($aP) > 4 ? $aP[4] : ""
         $iZone += 1
     Next
 EndFunc
@@ -188,12 +189,30 @@ Func _Vanquisher_ZoneIsFaction($a_i_Index)
     Return $g_a_VanquisherZones[$a_i_Index][3] = 1
 EndFunc
 
-Func _Vanquisher_CampaignZoneCount($a_s_Campaign)
+Func _Vanquisher_ZoneRegion($a_i_Index)
     _Vanquisher_InitZones()
-    Local $n = 0
-    For $i = 0 To $g_i_VanquisherZoneCount - 1
-        If $g_a_VanquisherZones[$i][2] = $a_s_Campaign Then $n += 1
-    Next
-    Return $n
+    If $a_i_Index < 0 Or $a_i_Index >= $g_i_VanquisherZoneCount Then Return ""
+    Return $g_a_VanquisherZones[$a_i_Index][4]
+EndFunc
+
+Func _Vanquisher_ZoneSectionLabel($a_i_Index)
+    Local $sRegion = _Vanquisher_ZoneRegion($a_i_Index)
+    If $sRegion <> "" Then Return $sRegion
+    Return _Vanquisher_ZoneCampaign($a_i_Index)
+EndFunc
+
+Func _Vanquisher_InitZoneQueueFromSelection()
+    Global $g_a_VanquisherZoneQueue, $g_i_VanquisherZoneQueueIndex
+    $g_a_VanquisherZoneQueue = _Vanquisher_GetCheckedZoneIndexes()
+    If UBound($g_a_VanquisherZoneQueue) = 0 Then
+        $g_i_VanquisherZoneQueueIndex = -1
+        Return False
+    EndIf
+    $g_i_VanquisherZoneQueueIndex = 0
+    Return True
+EndFunc
+
+Func _Vanquisher_GetActiveZoneQueueIndex()
+    Return $g_i_VanquisherZoneQueueIndex
 EndFunc
 

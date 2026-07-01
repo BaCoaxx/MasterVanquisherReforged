@@ -70,49 +70,33 @@ EndFunc   ;==> CalculateFastestTime
 #EndRegion Calculations
 
 #Region Travel
-; International, Korea, China, and Japan — one district each (district number 0).
-; EU has multiple language districts; America (region 0) is excluded.
-; District = [language, region]
-Global Const $DISTRICT_INTERNATIONAL  = [0, -2]
-Global Const $DISTRICT_ASIA_KOREAN    = [0, 1]
-Global Const $DISTRICT_ASIA_CHINESE   = [0, 3]
-Global Const $DISTRICT_ASIA_JAPANESE  = [0, 4]
-
-Func _Addons_TravelTo($a_i_MapID, $a_a_District, $a_i_DistrictNumber = 0)
-    Map_InitMapIsLoaded()
-    Map_MoveMap($a_i_MapID, $a_a_District[1], $a_i_DistrictNumber, $a_a_District[0])
-EndFunc   ;==>_Addons_TravelTo
-
 Func WaitMapLoading($a_i_MapID, $a_i_Timeout = 15000)
     Return Map_WaitMapLoading($a_i_MapID, 0, $a_i_Timeout)
 EndFunc   ;==>WaitMapLoading
 
 Func OutpostTravel($a_i_MapID)
     For $i = 1 To 5
-        Local $Districts[4] = [ _
-            $DISTRICT_INTERNATIONAL, _
-            $DISTRICT_ASIA_KOREAN, _
-            $DISTRICT_ASIA_CHINESE, _
-            $DISTRICT_ASIA_JAPANESE _
-        ]
-
-        Local $District = $Districts[Random(0, 3, 1)]
-
         LogInfo("Travel Attempt #" & $i)
-        _Addons_TravelTo($a_i_MapID, $District, 0)
-
-        If WaitMapLoading($a_i_MapID, 15000) Then
-            Return True
-        EndIf
-
+        RndTravel($a_i_MapID)
+        If GetMapID() = $a_i_MapID Then Return True
         Sleep(1000)
     Next
-
     Return False
 EndFunc   ;==>OutpostTravel
 
 Func RndTravel($a_i_MapID, $a_WaitToLoad = True, $a_b_SwitchDistrict = True)
-    Return OutpostTravel($a_i_MapID)
+    ; International + Asia only
+    ; int, asia-ko, asia-ch, asia-ja
+    Local $aRegion[4] = [-2, 1, 3, 4]
+    Local $aLanguage[4] = [0, 0, 0, 0]
+
+    Local $iUseDistricts = 4
+    Local $iRandom = Random(0, $iUseDistricts - 1, 1)
+
+    Map_InitMapIsLoaded()
+    Map_MoveMap($a_i_MapID, $aRegion[$iRandom], 0, $aLanguage[$iRandom])
+    If $a_WaitToLoad Then Map_WaitMapLoading($a_i_MapID)
+    Sleep(875)
 EndFunc   ;==>RndTravel
 #EndRegion Travel
 

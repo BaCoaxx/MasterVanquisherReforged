@@ -8,9 +8,8 @@ Global $NumberRun = 0
 Global $boolrun = False
 Global $coords[2]
 Global $Title, $sGW
-Global $Bool_Donate = False, $Bool_HM = False, $Bool_AddHeroes = False, $Bool_Bu = False, $Bool_Stones = False
+Global $Bool_Donate = False, $Bool_Bu = False, $Bool_Stones = False
 Global $Bool_OpenChests = False, $Bool_Conset = False
-Global $iniHero = $VANQUISHER_HERO_INI
 
 ; Blue dashboard palette (AutoIt uses 0xRRGGBB colors)
 Global Const $GUI_CLR_BG = 0x0B0F14       ; Version 5.0a near-black navy background
@@ -110,79 +109,53 @@ Global $btnPageStats = GUICtrlCreateButton("Stats", 702, 28, 86, 32)
 GUICtrlSetOnEvent(-1, "_Vanquisher_TabClick")
 Global $btnPageAreas = GUICtrlCreateButton("Areas", 794, 28, 86, 32)
 GUICtrlSetOnEvent(-1, "_Vanquisher_TabClick")
-Global $btnPageOptions = GUICtrlCreateButton("Heroes", 886, 28, 86, 32)
-GUICtrlSetOnEvent(-1, "_Vanquisher_TabClick")
-Global $btnPageLogs = GUICtrlCreateButton("Log", 978, 28, 86, 32)
+Global $btnPageLogs = GUICtrlCreateButton("Log", 886, 28, 86, 32)
 GUICtrlSetOnEvent(-1, "_Vanquisher_TabClick")
 
 ; === Main page ===
 
-Global $grpOverall = GUICtrlCreateGroup("", 24, 196, 1070, 70)
-Global $hdrOverall = _Vanquisher_CreateCardHeader("MASTER VANQUISHER PROGRESS", 24, 196, 1070)
-Global $lblOverallProgress = GUICtrlCreateLabel("0 / 136 Zones Completed", 48, 228, 220, 18)
-GUICtrlSetColor(-1, $GUI_CLR_TEXT)
-Global $progOverall = GUICtrlCreateProgress(320, 228, 700, 18)
-GUICtrlSetData(-1, 0)
-Global $lblOverallPct = GUICtrlCreateLabel("0%", 1040, 228, 40, 18, $SS_RIGHT)
-GUICtrlSetColor(-1, $GUI_CLR_TEXT)
+Global $GENERAL = GUICtrlCreateGroup("", 24, 196, 260, 164)
+Global $hdrGeneral = _Vanquisher_CreateCardHeader("GENERAL CONFIGURATOR", 24, 196, 260)
+Global $Gui_Legio = GUICtrlCreateCheckbox("Use Stones", 40, 228, 200, 18)
+Global $Gui_Bu = GUICtrlCreateCheckbox("Use BU", 40, 252, 200, 18)
+Global $Gui_Conset = GUICtrlCreateCheckbox("Use Conset", 40, 276, 200, 18)
+Global $Gui_OpenChests = GUICtrlCreateCheckbox("Open Chests", 40, 300, 200, 18)
+Global $Gui_Donate = GUICtrlCreateCheckbox("Donate Faction", 40, 324, 200, 18)
+GUICtrlSetTip($Gui_Donate, "Donate Luxon/Kurzick faction to your guild. Only used on Echovald Forest and Jade Sea maps.")
 
-Global $grpTitleProg = GUICtrlCreateGroup("", 24, 286, 260, 164)
-Global $hdrTitleProg = _Vanquisher_CreateCardHeader("TITLE PROGRESS", 24, 286, 260)
-Global $lblProgProp = GUICtrlCreateLabel("Prophecies: 0 / 54", 44, 318, 130, 16)
-Global $progProp = GUICtrlCreateProgress(190, 318, 78, 14)
-Global $lblProgFac = GUICtrlCreateLabel("Factions: 0 / 33", 44, 342, 130, 16)
-Global $progFac = GUICtrlCreateProgress(190, 342, 78, 14)
-Global $lblProgNF = GUICtrlCreateLabel("Nightfall: 0 / 34", 44, 366, 130, 16)
-Global $progNF = GUICtrlCreateProgress(190, 366, 78, 14)
-Global $lblProgEotN = GUICtrlCreateLabel("EotN: 0 / 15", 44, 390, 130, 16)
-Global $progEotN = GUICtrlCreateProgress(190, 390, 78, 14)
-Global $lblProgTotal = GUICtrlCreateLabel("Total: 0 / 136", 44, 422, 130, 16)
-Global $progTotal = GUICtrlCreateProgress(190, 422, 78, 14)
+Global $grpSession = GUICtrlCreateGroup("", 306, 196, 250, 118)
+Global $hdrSession = _Vanquisher_CreateCardHeader("SESSION STATS", 306, 196, 250)
+Global $lblRuntime = GUICtrlCreateLabel("Runtime: 00:00:00", 326, 228, 210, 16)
+Global $lblZonesDone = GUICtrlCreateLabel("Zones Completed: 0", 326, 252, 210, 16)
+Global $lblDeaths = GUICtrlCreateLabel("Deaths: 0", 326, 276, 210, 16)
+Global $lblFails = GUICtrlCreateLabel("Fails: 0", 326, 300, 210, 16)
 
-Global $grpSession = GUICtrlCreateGroup("", 306, 286, 250, 118)
-Global $hdrSession = _Vanquisher_CreateCardHeader("SESSION STATS", 306, 286, 250)
-Global $lblRuntime = GUICtrlCreateLabel("Runtime: 00:00:00", 326, 318, 210, 16)
-Global $lblZonesDone = GUICtrlCreateLabel("Zones Completed: 0", 326, 342, 210, 16)
-Global $lblDeaths = GUICtrlCreateLabel("Deaths: 0", 326, 366, 210, 16)
-Global $lblFails = GUICtrlCreateLabel("Fails: 0", 326, 390, 210, 16)
+Global $grpCharInfo = GUICtrlCreateGroup("", 306, 330, 250, 126)
+Global $hdrCharInfo = _Vanquisher_CreateCardHeader("CHARACTER INFO", 306, 330, 250)
+Global $lblCharName = GUICtrlCreateLabel("Name: None", 326, 362, 210, 16)
+Global $lblCharProf = GUICtrlCreateLabel("Profession: Unknown", 326, 386, 210, 16)
+Global $lblCharLevel = GUICtrlCreateLabel("Level: --", 326, 410, 210, 16)
+Global $lblCharTitle = GUICtrlCreateLabel("Title Progress: 0%", 326, 434, 210, 16)
 
-Global $grpCharInfo = GUICtrlCreateGroup("", 306, 420, 250, 126)
-Global $hdrCharInfo = _Vanquisher_CreateCardHeader("CHARACTER INFO", 306, 420, 250)
-Global $lblCharName = GUICtrlCreateLabel("Name: None", 326, 452, 210, 16)
-Global $lblCharProf = GUICtrlCreateLabel("Profession: Unknown", 326, 476, 210, 16)
-Global $lblCharLevel = GUICtrlCreateLabel("Level: --", 326, 500, 210, 16)
-Global $lblCharTitle = GUICtrlCreateLabel("Title Progress: 0%", 326, 524, 210, 16)
-
-Global $grpRoute = GUICtrlCreateGroup("", 580, 286, 250, 284)
-Global $hdrRoute = _Vanquisher_CreateCardHeader("CURRENT ROUTE", 580, 286, 250)
-Global $edtRoutePreview = GUICtrlCreateEdit("", 594, 318, 220, 234, BitOR($ES_READONLY, $ES_MULTILINE, $WS_VSCROLL))
+Global $grpRoute = GUICtrlCreateGroup("", 580, 196, 514, 234)
+Global $hdrRoute = _Vanquisher_CreateCardHeader("CURRENT ROUTE", 580, 196, 514)
+Global $edtRoutePreview = GUICtrlCreateEdit("", 594, 228, 486, 186, BitOR($ES_READONLY, $ES_MULTILINE, $WS_VSCROLL))
 GUICtrlSetData(-1, "Select zones on the Routes tab." & @CRLF & "Route display is scrollable.")
 
-Global $grpCompleted = GUICtrlCreateGroup("", 850, 286, 244, 118)
-Global $hdrCompleted = _Vanquisher_CreateCardHeader("COMPLETED CAMPAIGNS", 850, 286, 244)
-Global $chkDoneProp = GUICtrlCreateCheckbox("Prophecies Vanquisher", 868, 318, 205, 18)
-GUICtrlSetState(-1, $GUI_DISABLE)
-Global $chkDoneFac = GUICtrlCreateCheckbox("Factions Vanquisher", 868, 342, 205, 18)
-GUICtrlSetState(-1, $GUI_DISABLE)
-Global $chkDoneNF = GUICtrlCreateCheckbox("Nightfall Vanquisher", 868, 366, 205, 18)
-GUICtrlSetState(-1, $GUI_DISABLE)
-Global $chkDoneEotN = GUICtrlCreateCheckbox("EotN Vanquisher", 868, 390, 205, 18)
-GUICtrlSetState(-1, $GUI_DISABLE)
+Global $grpRecent = GUICtrlCreateGroup("", 580, 442, 514, 104)
+Global $hdrRecent = _Vanquisher_CreateCardHeader("RECENT ACTIVITY", 580, 442, 514)
+Global $lblRecentDone = GUICtrlCreateLabel("Completed: None", 598, 474, 480, 16)
+Global $lblRecentSkip = GUICtrlCreateLabel("Skipped: None", 598, 498, 480, 16)
+Global $lblRecentFail = GUICtrlCreateLabel("Last Fail: None", 598, 522, 480, 16)
 
-Global $grpRecent = GUICtrlCreateGroup("", 850, 420, 244, 126)
-Global $hdrRecent = _Vanquisher_CreateCardHeader("RECENT ACTIVITY", 850, 420, 244)
-Global $lblRecentDone = GUICtrlCreateLabel("Completed: None", 868, 452, 205, 16)
-Global $lblRecentSkip = GUICtrlCreateLabel("Skipped: None", 868, 476, 205, 16)
-Global $lblRecentFail = GUICtrlCreateLabel("Last Fail: None", 868, 500, 205, 16)
-
-Global $grpVanquish = GUICtrlCreateGroup("", 24, 466, 260, 104)
-Global $hdrVanquish = _Vanquisher_CreateCardHeader("CURRENT ZONE", 24, 466, 260)
-Global $lblKilled = GUICtrlCreateLabel("Killed", 44, 498, 90, 16)
-Global $lblMissing = GUICtrlCreateLabel("Missing", 44, 522, 90, 16)
-Global $lblTotalMobs = GUICtrlCreateLabel("Total Mobs", 44, 546, 90, 16)
-Global $Tot_Killed = GUICtrlCreateLabel("0", 220, 498, 48, 16, $SS_RIGHT)
-Global $Tot_Missing = GUICtrlCreateLabel("0", 220, 522, 48, 16, $SS_RIGHT)
-Global $Tot_Total = GUICtrlCreateLabel("0", 220, 546, 48, 16, $SS_RIGHT)
+Global $grpVanquish = GUICtrlCreateGroup("", 24, 376, 260, 104)
+Global $hdrVanquish = _Vanquisher_CreateCardHeader("CURRENT ZONE", 24, 376, 260)
+Global $lblKilled = GUICtrlCreateLabel("Killed", 44, 408, 90, 16)
+Global $lblMissing = GUICtrlCreateLabel("Missing", 44, 432, 90, 16)
+Global $lblTotalMobs = GUICtrlCreateLabel("Total Mobs", 44, 456, 90, 16)
+Global $Tot_Killed = GUICtrlCreateLabel("0", 220, 408, 48, 16, $SS_RIGHT)
+Global $Tot_Missing = GUICtrlCreateLabel("0", 220, 432, 48, 16, $SS_RIGHT)
+Global $Tot_Total = GUICtrlCreateLabel("0", 220, 456, 48, 16, $SS_RIGHT)
 
 ; === Session tab ===
 ; GUICtrlCreateTabItem("Session") ; native tab removed
@@ -201,57 +174,15 @@ Global $gui_status_runs = GUICtrlCreateLabel("0", 760, 242, 40, 17, $SS_RIGHT)
 ; GUICtrlCreateTabItem("Routes") ; native tab removed
 Global $grpRoutes = GUICtrlCreateGroup("", 24, 210, 1070, 370)
 Global $hdrRoutes = _Vanquisher_CreateCardHeader("ZONE CHECKLIST", 24, 210, 1070)
-$lvRoutes = GUICtrlCreateListView("Campaign|Zone", 36, 240, 1042, 320, BitOR($LVS_REPORT, $WS_VSCROLL, $WS_HSCROLL, $WS_BORDER))
+$lvRoutes = GUICtrlCreateListView("Section|Zone", 36, 240, 1042, 298, BitOR($LVS_REPORT, $WS_VSCROLL, $WS_HSCROLL, $WS_BORDER))
 _GUICtrlListView_SetExtendedListViewStyle($lvRoutes, BitOR($LVS_EX_CHECKBOXES, $LVS_EX_FULLROWSELECT, $LVS_EX_GRIDLINES))
 _Vanquisher_PopulateRouteList()
-
-; === Settings tab ===
-; GUICtrlCreateTabItem("Settings") ; native tab removed
-Global $GENERAL = GUICtrlCreateGroup("", 24, 210, 300, 180)
-Global $hdrGeneral = _Vanquisher_CreateCardHeader("GENERAL CONFIGURATOR", 24, 210, 300)
-Global $Gui_HM_enable = GUICtrlCreateCheckbox("Hard Mode (HM)", 40, 236, 200, 18)
-Global $Gui_Legio = GUICtrlCreateCheckbox("Use Stones", 40, 260, 200, 18)
-Global $Gui_Bu = GUICtrlCreateCheckbox("Use BU", 40, 284, 200, 18)
-Global $Gui_Conset = GUICtrlCreateCheckbox("Use Conset", 40, 308, 200, 18)
-Global $Gui_OpenChests = GUICtrlCreateCheckbox("Open Chests", 40, 332, 200, 18)
-Global $Gui_Donate = GUICtrlCreateCheckbox("Donate Faction", 40, 356, 200, 18)
-GUICtrlSetTip($Gui_Donate, "Donate Luxon/Kurzick faction to your guild. Only used on Echovald Forest and Jade Sea maps.")
-
-Global $Gui_AddHeroes = GUICtrlCreateCheckbox("Add Heroes", 340, 210, 120, 18)
-GUICtrlSetOnEvent(-1, "gui_eventHandler")
-Global $Group2 = GUICtrlCreateGroup("", 340, 232, 340, 220)
-Global $hdrHeroTeam = _Vanquisher_CreateCardHeader("HERO TEAM", 340, 232, 340)
-Global $Hero1 = IniRead($iniHero, "Use Hero:", "1", "")
-Global $COMBO_HERO1 = GUICtrlCreateCombo($Hero1, 352, 256, 310, 25, BitOR($CBS_DROPDOWN, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "TAHLKORA|DUNKORO|OGDEN STONEHEALER|MASTER OF WHISPERS|OLIAS|LIVIA|NORGU|GWEN|ACOLYTE SOUSUKE|ZHED SHADOWHOOF|VEKK|ZENMAI|ANTON|MIKU|XANDRA|ZEI REI|HAYDA|GENERAL MORGAHN|M.O.X|MELONNI|KAHMU|RAZAH|MERCENARY HERO: 1|MERCENARY HERO: 2|MERCENARY HERO: 3|MERCENARY HERO: 4|MERCENARY HERO: 5|MERCENARY HERO: 6|MERCENARY HERO: 7|MERCENARY HERO: 8")
-Global $Hero2 = IniRead($iniHero, "Use Hero:", "2", "")
-Global $COMBO_HERO2 = GUICtrlCreateCombo($Hero2, 352, 284, 310, 25, BitOR($CBS_DROPDOWN, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "TAHLKORA|DUNKORO|OGDEN STONEHEALER|MASTER OF WHISPERS|OLIAS|LIVIA|NORGU|GWEN|ACOLYTE SOUSUKE|ZHED SHADOWHOOF|VEKK|ZENMAI|ANTON|MIKU|XANDRA|ZEI REI|HAYDA|GENERAL MORGAHN|M.O.X|MELONNI|KAHMU|RAZAH|MERCENARY HERO: 1|MERCENARY HERO: 2|MERCENARY HERO: 3|MERCENARY HERO: 4|MERCENARY HERO: 5|MERCENARY HERO: 6|MERCENARY HERO: 7|MERCENARY HERO: 8")
-Global $Hero3 = IniRead($iniHero, "Use Hero:", "3", "")
-Global $COMBO_HERO3 = GUICtrlCreateCombo($Hero3, 352, 312, 310, 25, BitOR($CBS_DROPDOWN, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "TAHLKORA|DUNKORO|OGDEN STONEHEALER|MASTER OF WHISPERS|OLIAS|LIVIA|NORGU|GWEN|ACOLYTE SOUSUKE|ZHED SHADOWHOOF|VEKK|ZENMAI|ANTON|MIKU|XANDRA|ZEI REI|HAYDA|GENERAL MORGAHN|M.O.X|MELONNI|KAHMU|RAZAH|MERCENARY HERO: 1|MERCENARY HERO: 2|MERCENARY HERO: 3|MERCENARY HERO: 4|MERCENARY HERO: 5|MERCENARY HERO: 6|MERCENARY HERO: 7|MERCENARY HERO: 8")
-Global $Hero4 = IniRead($iniHero, "Use Hero:", "4", "")
-Global $COMBO_HERO4 = GUICtrlCreateCombo($Hero4, 352, 340, 310, 25, BitOR($CBS_DROPDOWN, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "TAHLKORA|DUNKORO|OGDEN STONEHEALER|MASTER OF WHISPERS|OLIAS|LIVIA|NORGU|GWEN|ACOLYTE SOUSUKE|ZHED SHADOWHOOF|VEKK|ZENMAI|ANTON|MIKU|XANDRA|ZEI REI|HAYDA|GENERAL MORGAHN|M.O.X|MELONNI|KAHMU|RAZAH|MERCENARY HERO: 1|MERCENARY HERO: 2|MERCENARY HERO: 3|MERCENARY HERO: 4|MERCENARY HERO: 5|MERCENARY HERO: 6|MERCENARY HERO: 7|MERCENARY HERO: 8")
-Global $Hero5 = IniRead($iniHero, "Use Hero:", "5", "")
-Global $COMBO_HERO5 = GUICtrlCreateCombo($Hero5, 352, 368, 310, 25, BitOR($CBS_DROPDOWN, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "TAHLKORA|DUNKORO|OGDEN STONEHEALER|MASTER OF WHISPERS|OLIAS|LIVIA|NORGU|GWEN|ACOLYTE SOUSUKE|ZHED SHADOWHOOF|VEKK|ZENMAI|ANTON|MIKU|XANDRA|ZEI REI|HAYDA|GENERAL MORGAHN|M.O.X|MELONNI|KAHMU|RAZAH|MERCENARY HERO: 1|MERCENARY HERO: 2|MERCENARY HERO: 3|MERCENARY HERO: 4|MERCENARY HERO: 5|MERCENARY HERO: 6|MERCENARY HERO: 7|MERCENARY HERO: 8")
-Global $Hero6 = IniRead($iniHero, "Use Hero:", "6", "")
-Global $COMBO_HERO6 = GUICtrlCreateCombo($Hero6, 352, 396, 310, 25, BitOR($CBS_DROPDOWN, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "TAHLKORA|DUNKORO|OGDEN STONEHEALER|MASTER OF WHISPERS|OLIAS|LIVIA|NORGU|GWEN|ACOLYTE SOUSUKE|ZHED SHADOWHOOF|VEKK|ZENMAI|ANTON|MIKU|XANDRA|ZEI REI|HAYDA|GENERAL MORGAHN|M.O.X|MELONNI|KAHMU|RAZAH|MERCENARY HERO: 1|MERCENARY HERO: 2|MERCENARY HERO: 3|MERCENARY HERO: 4|MERCENARY HERO: 5|MERCENARY HERO: 6|MERCENARY HERO: 7|MERCENARY HERO: 8")
-Global $Hero7 = IniRead($iniHero, "Use Hero:", "7", "")
-Global $COMBO_HERO7 = GUICtrlCreateCombo($Hero7, 352, 424, 310, 25, BitOR($CBS_DROPDOWN, $CBS_AUTOHSCROLL))
-GUICtrlSetData(-1, "TAHLKORA|DUNKORO|OGDEN STONEHEALER|MASTER OF WHISPERS|OLIAS|LIVIA|NORGU|GWEN|ACOLYTE SOUSUKE|ZHED SHADOWHOOF|VEKK|ZENMAI|ANTON|MIKU|XANDRA|ZEI REI|HAYDA|GENERAL MORGAHN|M.O.X|MELONNI|KAHMU|RAZAH|MERCENARY HERO: 1|MERCENARY HERO: 2|MERCENARY HERO: 3|MERCENARY HERO: 4|MERCENARY HERO: 5|MERCENARY HERO: 6|MERCENARY HERO: 7|MERCENARY HERO: 8")
-Global $GUISaveHeroButton = GUICtrlCreateButton("Save Heroes", 580, 460, 100, 25)
-GUICtrlSetOnEvent($GUISaveHeroButton, "InitSave")
-
-GUICtrlSetState($COMBO_HERO1, $GUI_DISABLE)
-GUICtrlSetState($COMBO_HERO2, $GUI_DISABLE)
-GUICtrlSetState($COMBO_HERO3, $GUI_DISABLE)
-GUICtrlSetState($COMBO_HERO4, $GUI_DISABLE)
-GUICtrlSetState($COMBO_HERO5, $GUI_DISABLE)
-GUICtrlSetState($COMBO_HERO6, $GUI_DISABLE)
-GUICtrlSetState($COMBO_HERO7, $GUI_DISABLE)
+Global $btnSelectAscalon = GUICtrlCreateButton("Select Ascalon", 36, 548, 130, 24)
+GUICtrlSetTip(-1, "Check all nine Prophecies Ascalon zones for a full-section run")
+GUICtrlSetOnEvent(-1, "_Vanquisher_OnSelectAscalon")
+Global $btnClearZones = GUICtrlCreateButton("Clear Selection", 176, 548, 120, 24)
+GUICtrlSetTip(-1, "Uncheck all zones")
+GUICtrlSetOnEvent(-1, "_Vanquisher_OnClearZoneSelection")
 
 ; === Logs tab ===
 ; GUICtrlCreateTabItem("Logs") ; native tab removed
@@ -267,20 +198,18 @@ Global $grpLiveLog = GUICtrlCreateGroup("", 24, 608, 1070, 132)
 Global $hdrLiveLog = _Vanquisher_CreateCardHeader("LIVE LOG", 24, 608, 1070)
 Global $StatusLabel = GUICtrlCreateEdit("", 38, 638, 1040, 80, BitOR($ES_READONLY, $ES_MULTILINE, $WS_VSCROLL, $ES_AUTOVSCROLL))
 
-Global $g_aPageMain[] = [$grpOverall, $hdrOverall, $lblOverallProgress, $progOverall, $lblOverallPct, $grpTitleProg, $hdrTitleProg, $lblProgProp, $progProp, $lblProgFac, $progFac, $lblProgNF, $progNF, $lblProgEotN, $progEotN, $lblProgTotal, $progTotal, $grpSession, $hdrSession, $lblRuntime, $lblZonesDone, $lblDeaths, $lblFails, $grpCharInfo, $hdrCharInfo, $lblCharName, $lblCharProf, $lblCharLevel, $lblCharTitle, $grpRoute, $hdrRoute, $edtRoutePreview, $grpCompleted, $chkDoneProp, $chkDoneFac, $chkDoneNF, $chkDoneEotN, $grpRecent, $hdrRecent, $lblRecentDone, $lblRecentSkip, $lblRecentFail, $grpVanquish, $hdrVanquish, $lblKilled, $lblMissing, $lblTotalMobs, $Tot_Killed, $Tot_Missing, $Tot_Total]
+Global $g_aPageMain[] = [$GENERAL, $hdrGeneral, $Gui_Legio, $Gui_Bu, $Gui_Conset, $Gui_OpenChests, $Gui_Donate, $grpSession, $hdrSession, $lblRuntime, $lblZonesDone, $lblDeaths, $lblFails, $grpCharInfo, $hdrCharInfo, $lblCharName, $lblCharProf, $lblCharLevel, $lblCharTitle, $grpRoute, $hdrRoute, $edtRoutePreview, $grpRecent, $hdrRecent, $lblRecentDone, $lblRecentSkip, $lblRecentFail, $grpVanquish, $hdrVanquish, $lblKilled, $lblMissing, $lblTotalMobs, $Tot_Killed, $Tot_Missing, $Tot_Total]
 Global $g_aPageStats[] = [$grpSessionDetail, $hdrSessionDetail, $lblSessionRuntime, $lblSessionZones, $lblSessionDeaths, $lblSessionFails, $RUN, $hdrRuns, $lblTotalRuns, $gui_status_runs]
-Global $g_aPageAreas[] = [$grpRoutes, $hdrRoutes, $lvRoutes]
-Global $g_aPageOptions[] = [$GENERAL, $hdrGeneral, $Gui_HM_enable, $Gui_Legio, $Gui_Bu, $Gui_Conset, $Gui_OpenChests, $Gui_Donate, $Gui_AddHeroes, $Group2, $hdrHeroTeam, $COMBO_HERO1, $COMBO_HERO2, $COMBO_HERO3, $COMBO_HERO4, $COMBO_HERO5, $COMBO_HERO6, $COMBO_HERO7, $GUISaveHeroButton]
+Global $g_aPageAreas[] = [$grpRoutes, $hdrRoutes, $lvRoutes, $btnSelectAscalon, $btnClearZones]
 Global $g_aPageLogs[] = [$grpLogsTab, $hdrLogsTab, $edtSessionLog]
 Global $g_sActivePage = "Main"
 
 _Vanquisher_ApplyBlueTheme()
-_Vanquisher_InitDashboardLabels()
+_Vanquisher_InitZones()
 
 GUISetOnEvent($GUI_EVENT_CLOSE, "gui_eventHandler")
 GUIRegisterMsg($WM_NOTIFY, "_GUI_WM_NOTIFY")
 
-GUICtrlSetState($Gui_HM_enable, $GUI_CHECKED)
 GUICtrlSetState($Gui_Donate, $GUI_ENABLE)
 GUICtrlSetState($chkOnTop, $GUI_CHECKED)
 WinSetOnTop($Master_Vanquisher, "", $HWND_TOPMOST)
@@ -405,7 +334,6 @@ Func _Vanquisher_ApplyBlueTheme()
 	_Vanquisher_StyleCardHeader($lblStatusBadge)
 
 	Local $aLabels[] = [$lblStatusChar, $lblStatusCampaign, $lblStatusZone, $lblStatusQueue, _
-		$lblOverallProgress, $lblOverallPct, $lblProgProp, $lblProgFac, $lblProgNF, $lblProgEotN, $lblProgTotal, _
 		$lblRuntime, $lblZonesDone, $lblDeaths, $lblFails, $lblCharName, $lblCharProf, $lblCharLevel, $lblCharTitle, _
 		$lblRecentDone, $lblRecentSkip, $lblRecentFail, $lblKilled, $lblMissing, $lblTotalMobs, $lblTotalRuns, $Tot_Killed, $Tot_Missing, $Tot_Total, _
 		$lblSessionRuntime, $lblSessionZones, $lblSessionDeaths, $lblSessionFails, $gui_status_runs]
@@ -414,13 +342,13 @@ Func _Vanquisher_ApplyBlueTheme()
 		GUICtrlSetFont($aLabels[$i], 9, 400, 0, "Segoe UI")
 	Next
 
-	Local $aGroups[] = [$grpOverall, $grpTitleProg, $grpSession, $grpCharInfo, $grpRoute, $grpCompleted, $chkDoneProp, $chkDoneFac, $chkDoneNF, $chkDoneEotN, $grpRecent, $grpVanquish, _
-		$grpSessionDetail, $RUN, $grpRoutes, $GENERAL, $Group2, $grpLogsTab, $grpLiveLog]
+	Local $aGroups[] = [$GENERAL, $grpSession, $grpCharInfo, $grpRoute, $grpRecent, $grpVanquish, _
+		$grpSessionDetail, $RUN, $grpRoutes, $grpLogsTab, $grpLiveLog]
 	For $i = 0 To UBound($aGroups) - 1
 		_Vanquisher_StyleGroup($aGroups[$i])
 	Next
 
-	Local $aCardHeaders[] = [$hdrOverall, $hdrTitleProg, $hdrSession, $hdrCharInfo, $hdrRoute, $hdrCompleted, $hdrRecent, $hdrVanquish, $hdrSessionDetail, $hdrRuns, $hdrRoutes, $hdrGeneral, $hdrHeroTeam, $hdrLogsTab, $hdrLiveLog, $lblStatusBadge]
+	Local $aCardHeaders[] = [$hdrGeneral, $hdrSession, $hdrCharInfo, $hdrRoute, $hdrRecent, $hdrVanquish, $hdrSessionDetail, $hdrRuns, $hdrRoutes, $hdrLogsTab, $hdrLiveLog, $lblStatusBadge]
 	For $i = 0 To UBound($aCardHeaders) - 1
 		_Vanquisher_StyleCardHeader($aCardHeaders[$i])
 	Next
@@ -430,22 +358,10 @@ Func _Vanquisher_ApplyBlueTheme()
 		_Vanquisher_StyleInput($aInputs[$i])
 	Next
 
-	Local $aButtons[] = [$btnRefreshChars, $btnAttach, $Start, $btnSaveQueue, $btnLoadQueue, $btnPause, $btnStop, $GUISaveHeroButton, _
-		$btnPageMain, $btnPageStats, $btnPageAreas, $btnPageOptions, $btnPageLogs, $chkDoneProp, $chkDoneFac, $chkDoneNF, $chkDoneEotN, $chkOnTop, $chkDebug, $Gui_HM_enable, $Gui_Legio, $Gui_Bu, $Gui_Conset, $Gui_OpenChests, $Gui_Donate, $Gui_AddHeroes]
+	Local $aButtons[] = [$btnRefreshChars, $btnAttach, $Start, $btnSaveQueue, $btnLoadQueue, $btnPause, $btnStop, _
+		$btnPageMain, $btnPageStats, $btnPageAreas, $btnPageLogs, $chkOnTop, $chkDebug, $Gui_Legio, $Gui_Bu, $Gui_Conset, $Gui_OpenChests, $Gui_Donate]
 	For $i = 0 To UBound($aButtons) - 1
 		_Vanquisher_StyleButton($aButtons[$i])
-	Next
-
-	Local $aCombos[] = [$COMBO_HERO1, $COMBO_HERO2, $COMBO_HERO3, $COMBO_HERO4, $COMBO_HERO5, $COMBO_HERO6, $COMBO_HERO7]
-	For $i = 0 To UBound($aCombos) - 1
-		_Vanquisher_StyleInput($aCombos[$i])
-	Next
-
-	Local $aProgress[] = [$progOverall, $progProp, $progFac, $progNF, $progEotN, $progTotal]
-	For $i = 0 To UBound($aProgress) - 1
-		_Vanquisher_StripCtrlThemeById($aProgress[$i])
-		GUICtrlSetBkColor($aProgress[$i], $GUI_CLR_INPUT)
-		GUICtrlSetColor($aProgress[$i], $GUI_CLR_ACCENT)
 	Next
 
 	_Vanquisher_StyleListView($lvRoutes)
@@ -462,7 +378,6 @@ Func _Vanquisher_ShowPage($sPage)
 	_Vanquisher_SetCtrlArrayState($g_aPageMain, $GUI_HIDE)
 	_Vanquisher_SetCtrlArrayState($g_aPageStats, $GUI_HIDE)
 	_Vanquisher_SetCtrlArrayState($g_aPageAreas, $GUI_HIDE)
-	_Vanquisher_SetCtrlArrayState($g_aPageOptions, $GUI_HIDE)
 	_Vanquisher_SetCtrlArrayState($g_aPageLogs, $GUI_HIDE)
 
 	Switch $sPage
@@ -470,8 +385,6 @@ Func _Vanquisher_ShowPage($sPage)
 			_Vanquisher_SetCtrlArrayState($g_aPageStats, $GUI_SHOW)
 		Case "Areas"
 			_Vanquisher_SetCtrlArrayState($g_aPageAreas, $GUI_SHOW)
-		Case "Options"
-			_Vanquisher_SetCtrlArrayState($g_aPageOptions, $GUI_SHOW)
 		Case "Logs"
 			_Vanquisher_SetCtrlArrayState($g_aPageLogs, $GUI_SHOW)
 		Case Else
@@ -482,12 +395,10 @@ Func _Vanquisher_ShowPage($sPage)
 	GUICtrlSetBkColor($btnPageMain, ($sPage = "Main") ? $GUI_CLR_ACTIVE : $GUI_CLR_INPUT)
 	GUICtrlSetBkColor($btnPageStats, ($sPage = "Stats") ? $GUI_CLR_ACTIVE : $GUI_CLR_INPUT)
 	GUICtrlSetBkColor($btnPageAreas, ($sPage = "Areas") ? $GUI_CLR_ACTIVE : $GUI_CLR_INPUT)
-	GUICtrlSetBkColor($btnPageOptions, ($sPage = "Options") ? $GUI_CLR_ACTIVE : $GUI_CLR_INPUT)
 	GUICtrlSetBkColor($btnPageLogs, ($sPage = "Logs") ? $GUI_CLR_ACTIVE : $GUI_CLR_INPUT)
 	GUICtrlSetColor($btnPageMain, $GUI_CLR_TEXT)
 	GUICtrlSetColor($btnPageStats, $GUI_CLR_TEXT)
 	GUICtrlSetColor($btnPageAreas, $GUI_CLR_TEXT)
-	GUICtrlSetColor($btnPageOptions, $GUI_CLR_TEXT)
 	GUICtrlSetColor($btnPageLogs, $GUI_CLR_TEXT)
 EndFunc
 
@@ -499,26 +410,9 @@ Func _Vanquisher_TabClick()
 			_Vanquisher_ShowPage("Stats")
 		Case $btnPageAreas
 			_Vanquisher_ShowPage("Areas")
-		Case $btnPageOptions
-			_Vanquisher_ShowPage("Options")
 		Case $btnPageLogs
 			_Vanquisher_ShowPage("Logs")
 	EndSwitch
-EndFunc
-
-Func _Vanquisher_InitDashboardLabels()
-	_Vanquisher_InitZones()
-	Local $iTotal = $g_i_VanquisherZoneCount
-	Local $iProp = _Vanquisher_CampaignZoneCount("Prophecies")
-	Local $iFac = _Vanquisher_CampaignZoneCount("Factions")
-	Local $iNF = _Vanquisher_CampaignZoneCount("Nightfall")
-	Local $iEotN = _Vanquisher_CampaignZoneCount("EotN")
-	GUICtrlSetData($lblOverallProgress, "0 / " & $iTotal & " Zones Completed")
-	GUICtrlSetData($lblProgProp, "Prophecies: 0 / " & $iProp)
-	GUICtrlSetData($lblProgFac, "Factions: 0 / " & $iFac)
-	GUICtrlSetData($lblProgNF, "Nightfall: 0 / " & $iNF)
-	GUICtrlSetData($lblProgEotN, "EotN: 0 / " & $iEotN)
-	GUICtrlSetData($lblProgTotal, "Total: 0 / " & $iTotal)
 EndFunc
 
 Func _Vanquisher_PopulateRouteList()
@@ -526,7 +420,7 @@ Func _Vanquisher_PopulateRouteList()
 	_GUICtrlListView_BeginUpdate($lvRoutes)
 	_GUICtrlListView_DeleteAllItems($lvRoutes)
 	For $i = 0 To $g_i_VanquisherZoneCount - 1
-		Local $iItem = _GUICtrlListView_AddItem($lvRoutes, _Vanquisher_ZoneCampaign($i), -1, $i + 1000)
+		Local $iItem = _GUICtrlListView_AddItem($lvRoutes, _Vanquisher_ZoneSectionLabel($i), -1, $i + 1000)
 		_GUICtrlListView_SetItem($lvRoutes, _Vanquisher_ZoneDisplay($i), $iItem, 1)
 	Next
 	_GUICtrlListView_SetColumnWidth($lvRoutes, 0, 120)
@@ -560,6 +454,67 @@ Func _Vanquisher_GetCheckedZoneCount()
 	Return UBound(_Vanquisher_GetCheckedZoneIndexes())
 EndFunc
 
+Func _Vanquisher_SetZoneChecked($a_i_ZoneIndex, $a_bChecked)
+	Local $iCount = _GUICtrlListView_GetItemCount($lvRoutes)
+	For $i = 0 To $iCount - 1
+		If _Vanquisher_ListViewZoneIndex($i) = $a_i_ZoneIndex Then
+			_GUICtrlListView_SetItemChecked(GUICtrlGetHandle($lvRoutes), $i, $a_bChecked)
+			Return
+		EndIf
+	Next
+EndFunc
+
+Func _Vanquisher_ClearZoneSelection()
+	Local $iCount = _GUICtrlListView_GetItemCount($lvRoutes)
+	For $i = 0 To $iCount - 1
+		_GUICtrlListView_SetItemChecked(GUICtrlGetHandle($lvRoutes), $i, False)
+	Next
+	_Vanquisher_UpdateDonateCheckbox()
+	_Vanquisher_UpdateStatusBar()
+EndFunc
+
+Func _Vanquisher_SelectZonesByRegion($a_s_Region)
+	_Vanquisher_ClearZoneSelection()
+	For $i = 0 To $g_i_VanquisherZoneCount - 1
+		If StringCompare(_Vanquisher_ZoneRegion($i), $a_s_Region, 0) = 0 Then
+			_Vanquisher_SetZoneChecked($i, True)
+		EndIf
+	Next
+	_Vanquisher_UpdateDonateCheckbox()
+	_Vanquisher_UpdateStatusBar()
+EndFunc
+
+Func _Vanquisher_OnSelectAscalon()
+	_Vanquisher_SelectZonesByRegion("Ascalon")
+	CurrentAction("Selected all Ascalon zones (9). Click Start Vanquishing to run the full section.")
+EndFunc
+
+Func _Vanquisher_OnClearZoneSelection()
+	_Vanquisher_ClearZoneSelection()
+	CurrentAction("Zone selection cleared.")
+EndFunc
+
+Func _Vanquisher_OnBotStopped()
+	AdlibUnRegister("ReduceMemory")
+	AdlibUnRegister("UpdateVanquish")
+	AdlibUnRegister("CheckDeath")
+	AdlibUnRegister("status")
+	_Vanquisher_SetRoutesEnabled(True)
+	GUICtrlSetState($Gui_Donate, $GUI_ENABLE)
+	GUICtrlSetState($Gui_Bu, $GUI_ENABLE)
+	GUICtrlSetState($Gui_Conset, $GUI_ENABLE)
+	GUICtrlSetState($Gui_Legio, $GUI_ENABLE)
+	GUICtrlSetState($Start, $GUI_ENABLE)
+	GUICtrlSetState($txtName, $GUI_ENABLE)
+	If $Bot_Core_Initialized Then
+		_Vanquisher_SetConnectionStatus("ATTACHED")
+	Else
+		_Vanquisher_SetConnectionStatus("READY")
+	EndIf
+	$g_b_Vanquisher_SessionStarted = False
+	_Vanquisher_UpdateStatusBar()
+EndFunc
+
 Func _Vanquisher_IsFactionMapSelected()
 	Local $aChecked = _Vanquisher_GetCheckedZoneIndexes()
 	For $i = 0 To UBound($aChecked) - 1
@@ -586,7 +541,10 @@ Func _Vanquisher_UpdateStatusBar()
 	Local $aChecked = _Vanquisher_GetCheckedZoneIndexes()
 	If UBound($aChecked) > 0 Then
 		Local $iIdx = $aChecked[0]
-		GUICtrlSetData($lblStatusCampaign, _Vanquisher_ZoneCampaign($iIdx))
+		If $boolrun And $g_i_VanquisherZoneQueueIndex >= 0 And $g_i_VanquisherZoneQueueIndex < UBound($g_a_VanquisherZoneQueue) Then
+			$iIdx = $g_a_VanquisherZoneQueue[$g_i_VanquisherZoneQueueIndex]
+		EndIf
+		GUICtrlSetData($lblStatusCampaign, _Vanquisher_ZoneSectionLabel($iIdx))
 		GUICtrlSetData($lblStatusZone, _Vanquisher_ZoneDisplay($iIdx))
 	Else
 		GUICtrlSetData($lblStatusCampaign, "None")
@@ -604,7 +562,7 @@ Func _Vanquisher_UpdateRoutePreview()
 	Local $sRoute = ""
 	For $i = 0 To UBound($aChecked) - 1
 		If $i > 0 Then $sRoute &= @CRLF
-		$sRoute &= "-> " & _Vanquisher_ZoneDisplay($aChecked[$i])
+		$sRoute &= "-> " & _Vanquisher_ZoneSectionLabel($aChecked[$i]) & ": " & _Vanquisher_ZoneDisplay($aChecked[$i])
 	Next
 	GUICtrlSetData($edtRoutePreview, $sRoute)
 EndFunc
@@ -612,6 +570,8 @@ EndFunc
 Func _Vanquisher_SetRoutesEnabled($a_bEnable)
 	Local $iState = $a_bEnable ? $GUI_ENABLE : $GUI_DISABLE
 	GUICtrlSetState($lvRoutes, $iState)
+	GUICtrlSetState($btnSelectAscalon, $iState)
+	GUICtrlSetState($btnClearZones, $iState)
 EndFunc
 
 Func _GUI_WM_NOTIFY($hWnd, $iMsg, $wParam, $lParam)
@@ -629,16 +589,6 @@ EndFunc
 
 Func gui_eventHandler()
 	Switch @GUI_CtrlId
-		Case $Gui_AddHeroes
-			$Bool_AddHeroes = Not $Bool_AddHeroes
-			GUICtrlSetState($COMBO_HERO1, $Bool_AddHeroes ? $GUI_ENABLE : $GUI_DISABLE)
-			GUICtrlSetState($COMBO_HERO2, $Bool_AddHeroes ? $GUI_ENABLE : $GUI_DISABLE)
-			GUICtrlSetState($COMBO_HERO3, $Bool_AddHeroes ? $GUI_ENABLE : $GUI_DISABLE)
-			GUICtrlSetState($COMBO_HERO4, $Bool_AddHeroes ? $GUI_ENABLE : $GUI_DISABLE)
-			GUICtrlSetState($COMBO_HERO5, $Bool_AddHeroes ? $GUI_ENABLE : $GUI_DISABLE)
-			GUICtrlSetState($COMBO_HERO6, $Bool_AddHeroes ? $GUI_ENABLE : $GUI_DISABLE)
-			GUICtrlSetState($COMBO_HERO7, $Bool_AddHeroes ? $GUI_ENABLE : $GUI_DISABLE)
-
 		Case $chkOnTop
 			If BitAND(GUICtrlRead($chkOnTop), $GUI_CHECKED) = $GUI_CHECKED Then
 				WinSetOnTop($Master_Vanquisher, "", $HWND_TOPMOST)
@@ -650,10 +600,14 @@ Func gui_eventHandler()
 			Exit
 
 		Case $Start
-			$Title = _Vanquisher_GetFirstCheckedZoneTitle()
-			If $Title = "" Then
-				MsgBox(48, "Master Vanquisher Reforged", "No zone selected. Check at least one zone on the Routes tab.")
+			If Not _Vanquisher_InitZoneQueueFromSelection() Then
+				MsgBox(48, "Master Vanquisher Reforged", "No zone selected. Check at least one zone on the Areas tab, or click Select Ascalon.")
 				Return
+			EndIf
+			$Title = _Vanquisher_ZoneTitle($g_a_VanquisherZoneQueue[0])
+			Local $iQueueCount = UBound($g_a_VanquisherZoneQueue)
+			If $iQueueCount > 1 Then
+				CurrentAction("Zone queue: " & $iQueueCount & " zones — starting with " & _Vanquisher_ZoneDisplay($g_a_VanquisherZoneQueue[0]))
 			EndIf
 
 			If GUICtrlRead($txtName) = "" Then
@@ -669,12 +623,10 @@ Func gui_eventHandler()
 			EndIf
 
 			$Bool_Donate = False
-			$Bool_HM = False
 			$Bool_OpenChests = False
 			$Bool_Conset = False
 			$Bool_Bu = False
 			$Bool_Stones = False
-			If BitAND(GUICtrlRead($Gui_HM_enable), $GUI_CHECKED) = $GUI_CHECKED Then $Bool_HM = True
 			If BitAND(GUICtrlRead($Gui_Donate), $GUI_CHECKED) = $GUI_CHECKED Then $Bool_Donate = True
 			If BitAND(GUICtrlRead($Gui_OpenChests), $GUI_CHECKED) = $GUI_CHECKED Then $Bool_OpenChests = True
 			If BitAND(GUICtrlRead($Gui_Conset), $GUI_CHECKED) = $GUI_CHECKED Then $Bool_Conset = True
@@ -682,7 +634,6 @@ Func gui_eventHandler()
 			If BitAND(GUICtrlRead($Gui_Legio), $GUI_CHECKED) = $GUI_CHECKED Then $Bool_Stones = True
 
 			_Vanquisher_SetRoutesEnabled(False)
-			GUICtrlSetState($Gui_HM_enable, $GUI_DISABLE)
 			GUICtrlSetState($Gui_Donate, $GUI_DISABLE)
 			GUICtrlSetState($Gui_Bu, $GUI_DISABLE)
 			GUICtrlSetState($Gui_Conset, $GUI_DISABLE)
@@ -695,6 +646,8 @@ Func gui_eventHandler()
 
 			$NumberRun = 0
 			$RunSuccess = 0
+			$g_b_Vanquisher_SessionStarted = False
+			$g_b_Vanquisher_QueueAdvanced = False
 			$boolrun = True
 
 			$sGW = "Guild Wars - " & Player_GetCharName()

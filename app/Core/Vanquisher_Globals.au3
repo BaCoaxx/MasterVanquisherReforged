@@ -3,7 +3,6 @@
 
 Global Const $VANQUISHER_APP_DIR = @ScriptDir & "\app"
 Global Const $VANQUISHER_CONFIG_DIR = $VANQUISHER_APP_DIR & "\Config"
-Global Const $VANQUISHER_HERO_INI = $VANQUISHER_CONFIG_DIR & "\Hero.ini"
 Global Const $VANQUISHER_CHAR_INI = $VANQUISHER_CONFIG_DIR & "\Vanquisher.ini"
 
 Global Enum $INSTANCETYPE_OUTPOST = 0, $INSTANCETYPE_EXPLORABLE, $INSTANCETYPE_LOADING
@@ -152,3 +151,9 @@ Global $g_b_Vanquisher_TransitOnly = False
 Global $g_i_Vanquisher_GoOutLastMapHandled = -1
 Global $g_i_TearsRoute_LastMapHandled = -1
 Global $g_i_StingrayRoute_LastMapHandled = -1
+
+; Multi-zone queue (checked zones on Areas tab, run in order)
+Global $g_a_VanquisherZoneQueue[0]
+Global $g_i_VanquisherZoneQueueIndex = -1
+Global $g_b_Vanquisher_QueueAdvanced = False
+Global $g_b_Vanquisher_SessionStarted = False

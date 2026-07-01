@@ -22,56 +22,11 @@ Func GoOut()
 
 	CurrentAction("Going out")
 	_Vanquisher_ResetGoOutRouteProgress()
+	ReDim $heroNumberWithRez[0]
+	CacheHeroesWithRez()
 	;Ascalon
 	Do
 		If _Vanquisher_ShouldStop() Then Return
-		If $Bool_AddHeroes Then
-			KickAllHeroes()
-			Sleep(1000)
-
-			CurrentAction("Setting up Party.")
-			$PartySize = GetMaxPartySize(GetMapID())
-
-			If $PartySize >= 4 Then
-				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO1))
-				AddHero($heroToAdd)
-				Sleep(500)
-
-				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO2))
-				AddHero($heroToAdd)
-				Sleep(500)
-
-				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO3))
-				AddHero($heroToAdd)
-				Sleep(500)
-			EndIf
-
-			If $PartySize >= 6 Then
-				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO4))
-				AddHero($heroToAdd)
-				Sleep(500)
-
-				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO5))
-				AddHero($heroToAdd)
-				Sleep(500)
-			EndIf
-
-			If $PartySize = 8 Then
-				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO6))
-				AddHero($heroToAdd)
-				Sleep(500)
-
-				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO7))
-				AddHero($heroToAdd)
-			EndIf
-
-			CurrentAction("Party Setup")
-			ReDim $heroNumberWithRez[0]
-			CacheHeroesWithRez()
-		Else
-			CurrentAction("Skipped Party Setup")
-		EndIf
-
 
 		Switch $Title
 			Case "AscalonFoothills"
@@ -716,26 +671,3 @@ Func GoOut()
 			RndSleep(2000)
 		Until GetMapID() = $Map_To_Farm Or _Vanquisher_ShouldStop()
 	EndFunc
-
-	Func InitSave()
-	;@ScriptDir & "\Build_Team"
-    Local $ini_file, $workingdir
-	Switch (@GUI_CtrlId)
-		Case $GUISaveHeroButton
-    $workingdir = @WorkingDir
-    $ini_file = FileSaveDialog('Save', $VANQUISHER_CONFIG_DIR, 'Ini (*.ini)|All (*.*)', 10, 'Hero.ini', $Master_Vanquisher)
-    If @error Or $ini_file == '' Then
-        FileChangeDir($workingdir)
-        Return SetError(1, 0, '')
-    EndIf
-			IniWrite($ini_file, "Use Hero:", "1", GUICtrlRead($COMBO_HERO1))
-			IniWrite($ini_file, "Use Hero:", "2", GUICtrlRead($COMBO_HERO2))
-			IniWrite($ini_file, "Use Hero:", "3", GUICtrlRead($COMBO_HERO3))
-			IniWrite($ini_file, "Use Hero:", "4", GUICtrlRead($COMBO_HERO4))
-			IniWrite($ini_file, "Use Hero:", "5", GUICtrlRead($COMBO_HERO5))
-			IniWrite($ini_file, "Use Hero:", "6", GUICtrlRead($COMBO_HERO6))
-			IniWrite($ini_file, "Use Hero:", "7", GUICtrlRead($COMBO_HERO7))
-		FileChangeDir($workingdir)
-	EndSwitch
-EndFunc
-

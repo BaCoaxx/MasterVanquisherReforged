@@ -750,15 +750,52 @@ Func GetAreaVanquished()
     Return False
 EndFunc
 
+Func _Vanquisher_ResetZoneRouteState()
+    Global $DeadOnTheRun
+    $g_i_Vanquisher_GoOutLastMapHandled = -1
+    $g_i_TearsRoute_LastMapHandled = -1
+    $g_i_StingrayRoute_LastMapHandled = -1
+    $g_b_Vanquisher_HasRunRoute = False
+    $g_b_Vanquisher_RunFinished = False
+    $g_b_Vanquisher_AbortRoute = False
+    $g_b_Vanquisher_DeathResignPending = False
+    $g_i_Vanquisher_InitialFoesToKill = -1
+    $g_i_Vanquisher_InitialFoesKilled = 0
+    $g_b_Vanquisher_CounterUnreliable = False
+    $DeadOnTheRun = 0
+EndFunc
+
+Func _Vanquisher_AdvanceZoneQueue()
+    Global $Title, $NumberRun, $g_a_VanquisherZoneQueue, $g_i_VanquisherZoneQueueIndex, $g_b_Vanquisher_QueueAdvanced
+    $g_i_VanquisherZoneQueueIndex += 1
+    If $g_i_VanquisherZoneQueueIndex >= UBound($g_a_VanquisherZoneQueue) Then Return False
+
+    $Title = _Vanquisher_ZoneTitle($g_a_VanquisherZoneQueue[$g_i_VanquisherZoneQueueIndex])
+    $NumberRun = 0
+    $g_b_Vanquisher_QueueAdvanced = True
+    _Vanquisher_ResetZoneRouteState()
+
+    Local $iPos = $g_i_VanquisherZoneQueueIndex + 1
+    Local $iTotal = UBound($g_a_VanquisherZoneQueue)
+    CurrentAction("Queue: zone " & $iPos & "/" & $iTotal & " — " & _Vanquisher_ZoneDisplay($g_a_VanquisherZoneQueue[$g_i_VanquisherZoneQueueIndex]))
+    _Vanquisher_UpdateStatusBar()
+    Return True
+EndFunc
+
 Func _Vanquisher_FinishRun()
     Global $boolrun
     If $g_b_Vanquisher_RunFinished Then Return
     $g_b_Vanquisher_RunFinished = True
     $g_b_Vanquisher_AbortRoute = True
-    CurrentAction("Vanquish complete — resigning and stopping bot.")
+    CurrentAction("Vanquish complete — returning to outpost.")
     _Vanquisher_ReturnToOutpost()
+    If _Vanquisher_AdvanceZoneQueue() Then
+        CurrentAction("Next zone in queue.")
+        Return
+    EndIf
     $boolrun = False
-    CurrentAction("Vanquish finished — stopping bot.")
+    _Vanquisher_OnBotStopped()
+    CurrentAction("All queued zones finished — stopping bot.")
 EndFunc
 
 Func _Vanquisher_IsVanquishIncomplete()
@@ -859,12 +896,8 @@ Func SwitchMode($a_i_Mode)
 EndFunc
 
 Func _Vanquisher_ApplyDifficulty()
-    If $Bool_HM Then
-        If Not SwitchMode(1) Then
-            CurrentAction("Hard Mode not set — be party leader in outpost")
-        EndIf
-    Else
-        SwitchMode(0)
+    If Not SwitchMode(1) Then
+        CurrentAction("Hard Mode not set — be party leader in outpost")
     EndIf
 EndFunc
 
@@ -954,7 +987,7 @@ Func GetVanguardTitle()
 EndFunc
 
 Func TravelTo($a_i_MapID, $a_i_District = 0)
-    Return RndTravel($a_i_MapID)
+    Return OutpostTravel($a_i_MapID)
 EndFunc
 
 Func GoNPC($a_v_Agent)
