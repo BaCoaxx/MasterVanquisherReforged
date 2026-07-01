@@ -33,6 +33,7 @@ Func GoOutAscalonFoothills()
 
 	If $l_i_Map = $AscalonFoothills_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
+		_Vanquisher_ApplyTravelersValeConsumables()
 		$g_b_Vanquisher_TransitOnly = True
 		CurrentAction("Transit -> AscalonFoothills (portal 2)")
 		_Vanquisher_RunAggroPortalPath($aAscalonFoothillsTransitPath, $vqrange, "outpost ")

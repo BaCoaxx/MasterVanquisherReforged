@@ -83,9 +83,7 @@ Func GoOut()
 					Move(4600, -27863)
 					WaitForLoad()
 				Case "TravelersVale"
-					MoveTo(9303, 4208)
-					Move(9275, 4000)
-					WaitForLoad()
+					GoOutTravelersVale()
 			;Maguuma
 				Case "DryTop"
 					MoveTo(1683, -1594)

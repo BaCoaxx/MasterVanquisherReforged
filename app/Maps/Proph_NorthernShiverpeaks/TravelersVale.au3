@@ -2,10 +2,51 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Func VQTravelersVale()
-	If GetMapID() = $TravelersVale_Map Then    
+Func GoOutTravelersVale()
+	Local $l_i_Map = GetMapID()
 
-		Local $aWaypoints[49][4] = [ [8207, -333, " ", $vqrange] _
+	If $l_i_Map = $TravelersVale_Map Then Return
+
+	If $l_i_Map = $TravelersVale_Outpost Then
+		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
+		CurrentAction("Outpost -> Traveler's Vale")
+		MoveTo(9303, 4208)
+		Move(9275, 4000)
+		WaitForLoad()
+		If GetMapID() = $TravelersVale_Map Then
+			_Vanquisher_WaitForExplorable()
+			_Vanquisher_ApplyConsumables(True)
+		EndIf
+		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		Return
+	EndIf
+
+EndFunc
+
+Func VQTravelersVale()
+	If GetMapID() <> $TravelersVale_Map And GetMapID() <> $TravelersVale_Outpost Then
+		_Vanquisher_ResetGoOutRouteProgress()
+		CurrentAction("Traveling to Yak's Bend for Traveler's Vale.")
+		TravelTo($TravelersVale_Outpost)
+	EndIf
+
+	If GetMapID() = $TravelersVale_Outpost Then
+		_Vanquisher_ApplyDifficulty()
+		GoOutTravelersVale()
+		If GetMapID() <> $TravelersVale_Map Then
+			CurrentAction("Routing - on map " & GetMapID() & ", need Traveler's Vale (" & $TravelersVale_Map & ").")
+			Return
+		EndIf
+	EndIf
+
+	If GetMapID() <> $TravelersVale_Map Then
+		CurrentAction("Traveler's Vale route waiting - on map " & GetMapID() & ", need " & $TravelersVale_Map & ".")
+		Return
+	EndIf
+
+	CurrentAction("Starting Traveler's Vale vanquish route.")
+
+	Local $aWaypoints[49][4] = [ [8207, -333, " ", $vqrange] _
 		, [11417, -2899, " ", $vqrange] _
 		, [10010, -6296, " ", $vqrange] _
 		, [9963, -10398, " ", $vqrange] _
@@ -54,6 +95,6 @@ Func VQTravelersVale()
 		, [2915, 4653, " ", $vqrange] _
 		, [1299, 3860, " ", $vqrange] _
 		, [5094, 7017, " ", $vqrange] ]
-		MoveandAggroVQFullRoute($aWaypoints)
-    EndIf
+
+	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc

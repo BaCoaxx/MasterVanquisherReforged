@@ -182,8 +182,20 @@ Func _IsStonesEnabled()
 	Return $Bool_Stones
 EndFunc
 
+Func _Vanquisher_IsTravelersValeMap()
+	Return GetMapID() = $TravelersVale_Map
+EndFunc
+
+Func _Vanquisher_ApplyTravelersValeConsumables()
+	If Not _Vanquisher_IsTravelersValeMap() Then Return
+	If Not Map_GetInstanceInfo("IsExplorable") Then Return
+	CurrentAction("Traveler's Vale — applying consumables.")
+	_Vanquisher_ApplyConsumables(True)
+EndFunc
+
 Func _Vanquisher_IsInVanquishArea()
 	Global $Map_To_Farm
+	If _Vanquisher_IsTravelersValeMap() And Map_GetInstanceInfo("IsExplorable") Then Return True
 	If $g_b_Vanquisher_TransitOnly Then Return False
 	If Map_GetInstanceInfo("IsExplorable") Then Return True
 	If $Map_To_Farm > 0 And GetMapID() = $Map_To_Farm And Not Map_GetInstanceInfo("IsOutpost") Then Return True

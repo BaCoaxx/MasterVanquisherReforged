@@ -178,7 +178,7 @@ $lvRoutes = GUICtrlCreateListView("Section|Zone", 36, 240, 1042, 298, BitOR($LVS
 _GUICtrlListView_SetExtendedListViewStyle($lvRoutes, BitOR($LVS_EX_CHECKBOXES, $LVS_EX_FULLROWSELECT, $LVS_EX_GRIDLINES))
 _Vanquisher_PopulateRouteList()
 Global $btnSelectAscalon = GUICtrlCreateButton("Select Ascalon", 36, 548, 130, 24)
-GUICtrlSetTip(-1, "Check all nine Prophecies Ascalon zones for a full-section run")
+GUICtrlSetTip(-1, "Check all ten Prophecies Ascalon zones for a full-section run")
 GUICtrlSetOnEvent(-1, "_Vanquisher_OnSelectAscalon")
 Global $btnClearZones = GUICtrlCreateButton("Clear Selection", 176, 548, 120, 24)
 GUICtrlSetTip(-1, "Uncheck all zones")
@@ -486,7 +486,7 @@ EndFunc
 
 Func _Vanquisher_OnSelectAscalon()
 	_Vanquisher_SelectZonesByRegion("Ascalon")
-	CurrentAction("Selected all Ascalon zones (9). Click Start Vanquishing to run the full section.")
+	CurrentAction("Selected Ascalon section (10 zones): southern Ascalon, Traveler's Vale, then Foothills/Diessa.")
 EndFunc
 
 Func _Vanquisher_OnClearZoneSelection()
