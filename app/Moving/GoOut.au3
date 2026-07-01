@@ -9,29 +9,6 @@ Func _Vanquisher_IsOnTransitToFarm()
 	Return False
 EndFunc
 
-Func _Vanquisher_AddHeroFromCombo($a_i_ComboCtrl)
-	Local $l_s_Name = StringStripWS(GUICtrlRead($a_i_ComboCtrl), 3)
-	If $l_s_Name = "" Then Return False
-	Local $l_i_HeroId = GetHeroIdByName($l_s_Name)
-	If $l_i_HeroId < 1 Then
-		CurrentAction("Unknown hero: " & $l_s_Name)
-		Return False
-	EndIf
-	Local $l_i_ModelId = GetHeroModelIdByHeroId($l_i_HeroId)
-	If $l_i_ModelId > 0 Then
-		CurrentAction("Adding hero: " & $l_s_Name & " (hero " & $l_i_HeroId & ", model " & $l_i_ModelId & ")")
-	Else
-		CurrentAction("Adding hero: " & $l_s_Name & " (hero " & $l_i_HeroId & ")")
-	EndIf
-	AddHero($l_i_HeroId)
-	_Vanquisher_CooperativeSleep(500)
-	If Not PartyHasHeroFileId($l_i_HeroId) Then
-		CurrentAction("Hero not in party yet: " & $l_s_Name)
-		Return False
-	EndIf
-	Return True
-EndFunc
-
 Func GoOut()
 	If _Vanquisher_ShouldStop() Then Return
 	RndSleep(250)
@@ -50,25 +27,42 @@ Func GoOut()
 		If _Vanquisher_ShouldStop() Then Return
 		If $Bool_AddHeroes Then
 			KickAllHeroes()
-			_Vanquisher_CooperativeSleep(1000)
+			Sleep(1000)
 
 			CurrentAction("Setting up Party.")
 			$PartySize = GetMaxPartySize(GetMapID())
 
 			If $PartySize >= 4 Then
-				_Vanquisher_AddHeroFromCombo($COMBO_HERO1)
-				_Vanquisher_AddHeroFromCombo($COMBO_HERO2)
-				_Vanquisher_AddHeroFromCombo($COMBO_HERO3)
+				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO1))
+				AddHero($heroToAdd)
+				Sleep(500)
+
+				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO2))
+				AddHero($heroToAdd)
+				Sleep(500)
+
+				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO3))
+				AddHero($heroToAdd)
+				Sleep(500)
 			EndIf
 
 			If $PartySize >= 6 Then
-				_Vanquisher_AddHeroFromCombo($COMBO_HERO4)
-				_Vanquisher_AddHeroFromCombo($COMBO_HERO5)
+				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO4))
+				AddHero($heroToAdd)
+				Sleep(500)
+
+				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO5))
+				AddHero($heroToAdd)
+				Sleep(500)
 			EndIf
 
 			If $PartySize = 8 Then
-				_Vanquisher_AddHeroFromCombo($COMBO_HERO6)
-				_Vanquisher_AddHeroFromCombo($COMBO_HERO7)
+				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO6))
+				AddHero($heroToAdd)
+				Sleep(500)
+
+				$heroToAdd = GetHeroIdByName(GUICtrlRead($COMBO_HERO7))
+				AddHero($heroToAdd)
 			EndIf
 
 			CurrentAction("Party Setup")
@@ -286,7 +280,7 @@ Func GoOut()
 					WaitForLoad()
 				Case "TalusChute"
 					Move(59.88, 10522.75)
-					_Vanquisher_CooperativeSleep(250)
+					Sleep(250)
 					Move(-25.37, 10672.75)
 					WaitForLoad()
 				Case "TascasDemise"
@@ -296,13 +290,13 @@ Func GoOut()
 				Case "WitmansFolly"
 					MoveTo(4869, 3423)
 					Move(5800, 1400)
-					_Vanquisher_CooperativeSleep(5000)
+					Sleep(5000)
 					WaitForLoad()
 			;RingOfFireIsland
 				Case "PerditionRock"
 					MoveTo(3603, -10090)
 					Move(3800, -8600)
-					_Vanquisher_CooperativeSleep(1000)
+					Sleep(1000)
 					WaitForLoad()
 			;ShingJeaIsland
 				Case "HaijuLagoon"
@@ -344,7 +338,7 @@ Func GoOut()
 					Dialog(0x7F)
 					Dialog(0x800009)
 					Dialog(0x80000B)
-					_Vanquisher_CooperativeSleep(1000)
+					Sleep(1000)
 					WaitForLoad()
 			;KainengCity
 				Case "BukdekByway"
@@ -405,7 +399,7 @@ Func GoOut()
 				Case "DrazachThicket"
 					MoveTo(-4557, 13723)
 					Move(-6300, 14400)
-					_Vanquisher_CooperativeSleep(10000)
+					Sleep(10000)
 					WaitForLoad()
 				Case "Ferndale"
 					MoveTo(7810, -726)
@@ -452,7 +446,7 @@ Func GoOut()
 					MoveTo(1059, 23549)
 					MoveTo(2750, 24727)
 					Move(4300, 25800)
-					_Vanquisher_CooperativeSleep(3000)
+					Sleep(3000)
 					WaitForLoad()
 				Case "MountQinkai"
 					MoveTo(-5206, 13154)
@@ -592,7 +586,7 @@ Func GoOut()
 					Sleep (1000)
 					Dialog(0x00000081)
 					Dialog(0x00000084)
-					_Vanquisher_CooperativeSleep(1000)
+					Sleep(1000)
 					WaitForLoad()
 				Case "TheMirrorOfLyss"
 					MoveTo(-3336, 1102)

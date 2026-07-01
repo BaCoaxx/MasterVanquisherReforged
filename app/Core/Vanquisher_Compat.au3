@@ -592,41 +592,6 @@ EndFunc
 
 #Region Sleep
 ; IniWriteSection is a built-in AutoIt function (do not redefine it here).
-
-Func _Vanquisher_RawSleep($a_i_Ms)
-    DllCall("kernel32.dll", "none", "Sleep", "uint", $a_i_Ms)
-EndFunc
-
-Func _Vanquisher_PumpGUI()
-    Local Static $l_t_Msg = 0
-    If $l_t_Msg = 0 Then
-        $l_t_Msg = DllStructCreate("hwnd hWnd;uint Msg;wparam wParam;lparam lParam;dword Time;long Pt")
-    EndIf
-    While DllCall("user32.dll", "int", "PeekMessageW", "struct*", $l_t_Msg, "hwnd", 0, "uint", 0, "uint", 0, "uint", 1)[0]
-        DllCall("user32.dll", "int", "TranslateMessage", "struct*", $l_t_Msg)
-        DllCall("user32.dll", "lresult", "DispatchMessageW", "struct*", $l_t_Msg)
-    WEnd
-EndFunc
-
-; Non-blocking sleep: pumps GUI events and honors stop/pause during waits.
-Func _Vanquisher_CooperativeSleep($a_i_Ms)
-    If $a_i_Ms <= 0 Then Return
-    Local $l_t_Start = TimerInit()
-    While TimerDiff($l_t_Start) < $a_i_Ms
-        _Vanquisher_PumpGUI()
-        If _Vanquisher_ShouldStop() Then Return
-        If IsDeclared("g_b_Vanquisher_Paused") And IsDeclared("boolrun") Then
-            Global $g_b_Vanquisher_Paused, $boolrun, $g_b_Vanquisher_AbortRoute
-            While $g_b_Vanquisher_Paused And $boolrun And Not $g_b_Vanquisher_AbortRoute
-                _Vanquisher_PumpGUI()
-                _Vanquisher_RawSleep(100)
-            WEnd
-        EndIf
-        If _Vanquisher_ShouldStop() Then Return
-        _Vanquisher_RawSleep(50)
-    WEnd
-EndFunc
-
 Func RndSleep($a_i_Ms, $a_f_Random = 0.05)
     Other_RndSleep($a_i_Ms, $a_f_Random)
 EndFunc
@@ -916,7 +881,6 @@ Func DonateFaction($a_s_Faction)
 EndFunc
 
 Func AddHero($a_i_HeroId)
-    If $a_i_HeroId < 1 Then Return False
     Return Party_AddHero($a_i_HeroId)
 EndFunc
 

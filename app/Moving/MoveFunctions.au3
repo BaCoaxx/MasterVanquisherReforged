@@ -83,7 +83,7 @@ Func MoveandAggroVQWurm($aWaypoints)
         If _Vanquisher_IsVanquishComplete() Then
             If _Vanquisher_OnVanquishComplete(" (wurm)") Then Return
         EndIf
-		_Vanquisher_CooperativeSleep(7000)
+		Sleep(7000)
     Next
     If _Vanquisher_IsVanquishComplete() Then
         _Vanquisher_OnVanquishComplete(" (wurm end)")
@@ -173,7 +173,7 @@ Func _Vanquisher_WaitForExplorable($a_i_MaxMs = 8000)
     If _Vanquisher_CanUseConsumables() Then Return True
     Local $l_i_Wait = 0
     While $l_i_Wait < $a_i_MaxMs And Not _Vanquisher_ShouldStop()
-        _Vanquisher_CooperativeSleep(250)
+        Sleep(250)
         $l_i_Wait += 250
         If _Vanquisher_CanUseConsumables() Then Return True
     WEnd
