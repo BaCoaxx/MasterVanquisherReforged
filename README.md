@@ -102,7 +102,14 @@ If both commands return version information without errors, your Wine environmen
 4. Configure any desired options.
 5. Launch the main script through AutoIt3.
 
----
+Download links:
+
+- **Guild Wars Client:** [Download Guild Wars (GwSetup.exe)](https://cloudfront.guildwars2.com/client/GwSetup.exe)
+
+- **GWAu3 GitHub Repository:** [GwAu3 on GitHub](https://github.com/GwAu3-Projects/GwAu3)
+
+- **AutoIt Official Website:** [AutoIt Downloads](https://www.autoitscript.com/site/autoit/)
+```
 
 # Combat System
 
