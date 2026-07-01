@@ -11,7 +11,14 @@ Func Fight($a_i_AggroRange, $a_s_Label = "")
     If GetPartyDead() Then Return
 
     _Vanquisher_InitCombatAI()
-    If Not $g_b_Vanquisher_CombatAIReady Then Return
+    If Not $g_b_Vanquisher_CombatAIReady Then
+        Sleep(500)
+        _Vanquisher_InitCombatAI()
+    EndIf
+    If Not $g_b_Vanquisher_CombatAIReady Then
+        CurrentAction("Combat AI not ready — need Hard Mode explorable zone with cached skill bar.")
+        Return
+    EndIf
 
     $g_h_Vanquisher_FightTimer = TimerInit()
     Local $l_f_AnchorX = Agent_GetAgentInfo(-2, "X")
