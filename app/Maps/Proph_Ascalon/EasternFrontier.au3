@@ -2,9 +2,11 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aEasternFrontierOutpostPath[2][2] = [ _
-	[-2300, -13836], _
-	[-1593, -13669] _
+Global $aEasternFrontierTransitPath[4][2] = [ _
+	[3551, 22055], _
+	[6793, 23200], _
+	[8200, 25000], _
+	[9660, 26445] _
 ]
 
 Func GoOutEasternFrontier()
@@ -12,12 +14,12 @@ Func GoOutEasternFrontier()
 
 	If $l_i_Map = $EasternFrontier_Map Then Return
 
-	If $l_i_Map = $EasternFrontier_Outpost Then
+	If $l_i_Map = $EasternFrontier_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> EasternFrontier (portal 1)")
-		_Vanquisher_RunAggroPortalPath($aEasternFrontierOutpostPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		CurrentAction("PockmarkFlats -> EasternFrontier")
+		_Vanquisher_RunAggroPortalPath($aEasternFrontierTransitPath, $vqrange, "outpost ")
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
 	EndIf
@@ -25,19 +27,19 @@ Func GoOutEasternFrontier()
 EndFunc
 
 Func VQEasternFrontier()
-	If GetMapID() <> $EasternFrontier_Map And GetMapID() <> $EasternFrontier_Outpost Then
+	If GetMapID() <> $EasternFrontier_Map And GetMapID() <> $EasternFrontier_Transit Then
 		_Vanquisher_ResetGoOutRouteProgress()
-		CurrentAction("Traveling to outpost for EasternFrontier.")
-		TravelTo($EasternFrontier_Outpost)
+		CurrentAction("EasternFrontier route waiting - on map " & GetMapID() & ", need " & $EasternFrontier_Map & " via Pockmark Flats.")
+		Return
 	EndIf
 
-	If GetMapID() = $EasternFrontier_Outpost Then
+	If GetMapID() = $EasternFrontier_Transit Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutEasternFrontier()
 		If GetMapID() <> $EasternFrontier_Map Then
 			CurrentAction("Routing - on map " & GetMapID() & ", need EasternFrontier (" & $EasternFrontier_Map & ").")
 			Return
-	EndIf
+		EndIf
 	EndIf
 
 	If GetMapID() <> $EasternFrontier_Map Then
@@ -154,4 +156,3 @@ Func VQEasternFrontier()
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
-

@@ -2,9 +2,11 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aPockmarkFlatsOutpostPath[2][2] = [ _
-	[-6218, 22736], _
-	[-6197, 22280] _
+Global $aPockmarkFlatsTransitPath[4][2] = [ _
+	[21699, 3672], _
+	[20445, -5550], _
+	[22000, -4500], _
+	[24367, -4312] _
 ]
 
 Func GoOutPockmarkFlats()
@@ -12,12 +14,12 @@ Func GoOutPockmarkFlats()
 
 	If $l_i_Map = $PockmarkFlats_Map Then Return
 
-	If $l_i_Map = $PockmarkFlats_Outpost Then
+	If $l_i_Map = $PockmarkFlats_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> PockmarkFlats (portal 1)")
-		_Vanquisher_RunAggroPortalPath($aPockmarkFlatsOutpostPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		CurrentAction("RegentValley -> PockmarkFlats")
+		_Vanquisher_RunAggroPortalPath($aPockmarkFlatsTransitPath, $vqrange, "outpost ")
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
 	EndIf
@@ -25,19 +27,19 @@ Func GoOutPockmarkFlats()
 EndFunc
 
 Func VQPockmarkFlats()
-	If GetMapID() <> $PockmarkFlats_Map And GetMapID() <> $PockmarkFlats_Outpost Then
+	If GetMapID() <> $PockmarkFlats_Map And GetMapID() <> $PockmarkFlats_Transit Then
 		_Vanquisher_ResetGoOutRouteProgress()
-		CurrentAction("Traveling to outpost for PockmarkFlats.")
-		TravelTo($PockmarkFlats_Outpost)
+		CurrentAction("PockmarkFlats route waiting - on map " & GetMapID() & ", need " & $PockmarkFlats_Map & " via Regent Valley.")
+		Return
 	EndIf
 
-	If GetMapID() = $PockmarkFlats_Outpost Then
+	If GetMapID() = $PockmarkFlats_Transit Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutPockmarkFlats()
 		If GetMapID() <> $PockmarkFlats_Map Then
 			CurrentAction("Routing - on map " & GetMapID() & ", need PockmarkFlats (" & $PockmarkFlats_Map & ").")
 			Return
-	EndIf
+		EndIf
 	EndIf
 
 	If GetMapID() <> $PockmarkFlats_Map Then
@@ -180,4 +182,3 @@ Func VQPockmarkFlats()
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
-

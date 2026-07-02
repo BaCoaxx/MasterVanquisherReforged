@@ -2,9 +2,17 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aTheBreachOutpostPath[2][2] = [ _
-	[8304, -458], _
-	[10540, -4383] _
+Global $aTheBreachReturnFromDGPath[3][2] = [ _
+	[-4577, -978], _
+	[-4682, -1082], _
+	[-4819, -1215] _
+]
+
+Global $aTheBreachReturnFromFTCPath[4][2] = [ _
+	[-18448, -11278], _
+	[-19523, -8452], _
+	[-17298, -5976], _
+	[-18414, -13661] _
 ]
 
 Global $aTheBreachTransitPath[9][2] = [ _
@@ -24,11 +32,21 @@ Func GoOutTheBreach()
 
 	If $l_i_Map = $TheBreach_Map Then Return
 
-	If $l_i_Map = $TheBreach_Outpost Then
+	If $l_i_Map = $TheBreach_Transit3 Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> DiessaLowlands (portal 1)")
-		_Vanquisher_RunAggroPortalPath($aTheBreachOutpostPath, $vqrange, "outpost ")
+		CurrentAction("Dragon's Gullet -> FlameTempleCorridor (en route to The Breach)")
+		_Vanquisher_RunAggroPortalPath($aTheBreachReturnFromDGPath, $vqrange, "outpost ")
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		$g_b_Vanquisher_TransitOnly = False
+		Return
+	EndIf
+
+	If $l_i_Map = $TheBreach_Transit2 Then
+		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
+		$g_b_Vanquisher_TransitOnly = True
+		CurrentAction("FlameTempleCorridor -> DiessaLowlands (en route to The Breach)")
+		_Vanquisher_RunAggroPortalPath($aTheBreachReturnFromFTCPath, $vqrange, "outpost ")
 		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
@@ -37,7 +55,7 @@ Func GoOutTheBreach()
 	If $l_i_Map = $TheBreach_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("DiessaLowlands -> TheBreach (portal 2)")
+		CurrentAction("DiessaLowlands -> TheBreach")
 		_Vanquisher_RunAggroPortalPath($aTheBreachTransitPath, $vqrange, "outpost ")
 		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
@@ -47,19 +65,19 @@ Func GoOutTheBreach()
 EndFunc
 
 Func VQTheBreach()
-	If GetMapID() <> $TheBreach_Map And GetMapID() <> $TheBreach_Outpost And GetMapID() <> $TheBreach_Transit Then
+	If GetMapID() <> $TheBreach_Map And GetMapID() <> $TheBreach_Transit And GetMapID() <> $TheBreach_Transit2 And GetMapID() <> $TheBreach_Transit3 Then
 		_Vanquisher_ResetGoOutRouteProgress()
-		CurrentAction("Traveling to outpost for TheBreach.")
-		TravelTo($TheBreach_Outpost)
+		CurrentAction("TheBreach route waiting - on map " & GetMapID() & ", need " & $TheBreach_Map & " via Diessa Lowlands.")
+		Return
 	EndIf
 
-	If GetMapID() = $TheBreach_Outpost Or GetMapID() = $TheBreach_Transit Then
+	If GetMapID() = $TheBreach_Transit Or GetMapID() = $TheBreach_Transit2 Or GetMapID() = $TheBreach_Transit3 Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutTheBreach()
 		If GetMapID() <> $TheBreach_Map Then
 			CurrentAction("Routing - on map " & GetMapID() & ", need TheBreach (" & $TheBreach_Map & ").")
 			Return
-	EndIf
+		EndIf
 	EndIf
 
 	If GetMapID() <> $TheBreach_Map Then
@@ -151,4 +169,3 @@ Func VQTheBreach()
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
-

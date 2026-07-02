@@ -2,9 +2,12 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aOldAscalonOutpostPath[2][2] = [ _
-	[625, 1883], _
-	[-426, 1874] _
+Global $aOldAscalonTransitPath[5][2] = [ _
+	[6802, -804], _
+	[2266, -6672], _
+	[1931, -4717], _
+	[1500, -8000], _
+	[1891, -11181] _
 ]
 
 Func GoOutOldAscalon()
@@ -12,12 +15,12 @@ Func GoOutOldAscalon()
 
 	If $l_i_Map = $OldAscalon_Map Then Return
 
-	If $l_i_Map = $OldAscalon_Outpost Then
+	If $l_i_Map = $OldAscalon_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> OldAscalon (portal 1)")
-		_Vanquisher_RunAggroPortalPath($aOldAscalonOutpostPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		CurrentAction("TheBreach -> OldAscalon")
+		_Vanquisher_RunAggroPortalPath($aOldAscalonTransitPath, $vqrange, "outpost ")
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
 	EndIf
@@ -25,19 +28,19 @@ Func GoOutOldAscalon()
 EndFunc
 
 Func VQOldAscalon()
-	If GetMapID() <> $OldAscalon_Map And GetMapID() <> $OldAscalon_Outpost Then
+	If GetMapID() <> $OldAscalon_Map And GetMapID() <> $OldAscalon_Transit Then
 		_Vanquisher_ResetGoOutRouteProgress()
-		CurrentAction("Traveling to outpost for OldAscalon.")
-		TravelTo($OldAscalon_Outpost)
+		CurrentAction("OldAscalon route waiting - on map " & GetMapID() & ", need " & $OldAscalon_Map & " via The Breach.")
+		Return
 	EndIf
 
-	If GetMapID() = $OldAscalon_Outpost Then
+	If GetMapID() = $OldAscalon_Transit Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutOldAscalon()
 		If GetMapID() <> $OldAscalon_Map Then
 			CurrentAction("Routing - on map " & GetMapID() & ", need OldAscalon (" & $OldAscalon_Map & ").")
 			Return
-	EndIf
+		EndIf
 	EndIf
 
 	If GetMapID() <> $OldAscalon_Map Then
@@ -158,4 +161,3 @@ Func VQOldAscalon()
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
-

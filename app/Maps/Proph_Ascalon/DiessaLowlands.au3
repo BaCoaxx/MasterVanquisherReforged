@@ -2,19 +2,7 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aDiessaLowlandsOutpostPath[2][2] = [ _
-	[8304, -458], _
-	[10540, -4383] _
-]
-
-Global $aDiessaLowlandsTransitPath[4][2] = [ _
-	[10274, -11684], _
-	[9741, -16900], _
-	[10615, -17054], _
-	[11056, -17139] _
-]
-
-Global $aDiessaLowlandsTransit2Path[12][2] = [ _
+Global $aDiessaLowlandsTransitPath[12][2] = [ _
 	[-5680, 1631], _
 	[-2243, 2158], _
 	[-942, 3489], _
@@ -34,32 +22,11 @@ Func GoOutDiessaLowlands()
 
 	If $l_i_Map = $DiessaLowlands_Map Then Return
 
-	If $l_i_Map = $DiessaLowlands_Outpost Then
-		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
-		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> DiessaLowlands (portal 1)")
-		_Vanquisher_RunAggroPortalPath($aDiessaLowlandsOutpostPath, $vqrange, "outpost ")
-		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
-		$g_b_Vanquisher_TransitOnly = False
-		Return
-	EndIf
-
 	If $l_i_Map = $DiessaLowlands_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
-		_Vanquisher_ApplyTravelersValeConsumables()
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Transit -> DiessaLowlands (portal 2)")
+		CurrentAction("AscalonFoothills -> DiessaLowlands")
 		_Vanquisher_RunAggroPortalPath($aDiessaLowlandsTransitPath, $vqrange, "outpost ")
-		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
-		$g_b_Vanquisher_TransitOnly = False
-		Return
-	EndIf
-
-	If $l_i_Map = $DiessaLowlands_Transit2 Then
-		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
-		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Transit -> DiessaLowlands (portal 3)")
-		_Vanquisher_RunAggroPortalPath($aDiessaLowlandsTransit2Path, $vqrange, "outpost ")
 		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
@@ -68,19 +35,19 @@ Func GoOutDiessaLowlands()
 EndFunc
 
 Func VQDiessaLowlands()
-	If GetMapID() <> $DiessaLowlands_Map And GetMapID() <> $DiessaLowlands_Outpost And GetMapID() <> $DiessaLowlands_Transit And GetMapID() <> $DiessaLowlands_Transit2 Then
+	If GetMapID() <> $DiessaLowlands_Map And GetMapID() <> $DiessaLowlands_Transit Then
 		_Vanquisher_ResetGoOutRouteProgress()
-		CurrentAction("Traveling to outpost for DiessaLowlands.")
-		TravelTo($DiessaLowlands_Outpost)
+		CurrentAction("DiessaLowlands route waiting - on map " & GetMapID() & ", need " & $DiessaLowlands_Map & " via Ascalon Foothills.")
+		Return
 	EndIf
 
-	If GetMapID() = $DiessaLowlands_Outpost Or GetMapID() = $DiessaLowlands_Transit Or GetMapID() = $DiessaLowlands_Transit2 Then
+	If GetMapID() = $DiessaLowlands_Transit Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutDiessaLowlands()
 		If GetMapID() <> $DiessaLowlands_Map Then
 			CurrentAction("Routing - on map " & GetMapID() & ", need DiessaLowlands (" & $DiessaLowlands_Map & ").")
 			Return
-	EndIf
+		EndIf
 	EndIf
 
 	If GetMapID() <> $DiessaLowlands_Map Then
@@ -257,4 +224,3 @@ Func VQDiessaLowlands()
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
-

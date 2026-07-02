@@ -2,11 +2,6 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aDragonsGulletOutpostPath[2][2] = [ _
-	[945, 14173], _
-	[2341, 13416] _
-]
-
 Global $aDragonsGulletTransitPath[13][2] = [ _
 	[3071, 13038], _
 	[4060, 14711], _
@@ -50,12 +45,12 @@ Func GoOutDragonsGullet()
 
 	If $l_i_Map = $DragonsGullet_Map Then Return
 
-	If $l_i_Map = $DragonsGullet_Outpost Then
+	If $l_i_Map = $DragonsGullet_Transit2 Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> DragonsGullet (portal 1)")
-		_Vanquisher_RunAggroPortalPath($aDragonsGulletOutpostPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		CurrentAction("DiessaLowlands -> FlameTempleCorridor (en route to Dragon's Gullet)")
+		_Vanquisher_RunAggroPortalPath($aDragonsGulletTransitPath, $vqrange, "outpost ")
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
 	EndIf
@@ -63,19 +58,9 @@ Func GoOutDragonsGullet()
 	If $l_i_Map = $DragonsGullet_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Transit -> DragonsGullet (portal 2)")
-		_Vanquisher_RunAggroPortalPath($aDragonsGulletTransitPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
-		$g_b_Vanquisher_TransitOnly = False
-		Return
-	EndIf
-
-	If $l_i_Map = $DragonsGullet_Transit2 Then
-		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
-		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Transit -> DragonsGullet (portal 3)")
+		CurrentAction("FlameTempleCorridor -> DragonsGullet")
 		_Vanquisher_RunAggroPortalPath($aDragonsGulletTransit2Path, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
 	EndIf
@@ -83,19 +68,19 @@ Func GoOutDragonsGullet()
 EndFunc
 
 Func VQDragonsGullet()
-	If GetMapID() <> $DragonsGullet_Map And GetMapID() <> $DragonsGullet_Outpost And GetMapID() <> $DragonsGullet_Transit And GetMapID() <> $DragonsGullet_Transit2 Then
+	If GetMapID() <> $DragonsGullet_Map And GetMapID() <> $DragonsGullet_Transit And GetMapID() <> $DragonsGullet_Transit2 Then
 		_Vanquisher_ResetGoOutRouteProgress()
-		CurrentAction("Traveling to outpost for DragonsGullet.")
-		TravelTo($DragonsGullet_Outpost)
+		CurrentAction("DragonsGullet route waiting - on map " & GetMapID() & ", need " & $DragonsGullet_Map & " via Diessa Lowlands and Flame Temple Corridor.")
+		Return
 	EndIf
 
-	If GetMapID() = $DragonsGullet_Outpost Or GetMapID() = $DragonsGullet_Transit Or GetMapID() = $DragonsGullet_Transit2 Then
+	If GetMapID() = $DragonsGullet_Transit Or GetMapID() = $DragonsGullet_Transit2 Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutDragonsGullet()
 		If GetMapID() <> $DragonsGullet_Map Then
 			CurrentAction("Routing - on map " & GetMapID() & ", need DragonsGullet (" & $DragonsGullet_Map & ").")
 			Return
-	EndIf
+		EndIf
 	EndIf
 
 	If GetMapID() <> $DragonsGullet_Map Then
@@ -208,4 +193,3 @@ Func VQDragonsGullet()
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
-

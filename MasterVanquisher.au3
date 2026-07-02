@@ -33,31 +33,31 @@ While 1
 
 			Switch $Title
 				Case "AscalonFoothills"
-					$Map_To_Zone = $AscalonFoothills_Outpost
+					$Map_To_Zone = $AscalonFoothills_Transit
 					$Map_To_Farm = $AscalonFoothills_Map
 				Case "DiessaLowlands"
-					$Map_To_Zone = $DiessaLowlands_Outpost
+					$Map_To_Zone = $DiessaLowlands_Transit
 					$Map_To_Farm = $DiessaLowlands_Map
 				Case "DragonsGullet"
-					$Map_To_Zone = $DragonsGullet_Outpost
+					$Map_To_Zone = $DragonsGullet_Transit2
 					$Map_To_Farm = $DragonsGullet_Map
 				Case "EasternFrontier"
-					$Map_To_Zone = $EasternFrontier_Outpost
+					$Map_To_Zone = $EasternFrontier_Transit
 					$Map_To_Farm = $EasternFrontier_Map
 				Case "FlameTempleCorridor"
-					$Map_To_Zone = $FlameTempleCorridor_Outpost
+					$Map_To_Zone = $FlameTempleCorridor_Transit
 					$Map_To_Farm = $FlameTempleCorridor_Map
 				Case "OldAscalon"
-					$Map_To_Zone = $OldAscalon_Outpost
+					$Map_To_Zone = $OldAscalon_Transit
 					$Map_To_Farm = $OldAscalon_Map
 				Case "PockmarkFlats"
-					$Map_To_Zone = $PockmarkFlats_Outpost
+					$Map_To_Zone = $PockmarkFlats_Transit
 					$Map_To_Farm = $PockmarkFlats_Map
 				Case "RegentValley"
-					$Map_To_Zone = $RegentValley_Outpost
+					$Map_To_Zone = $RegentValley_Transit
 					$Map_To_Farm = $RegentValley_Map
 				Case "TheBreach"
-					$Map_To_Zone = $TheBreach_Outpost
+					$Map_To_Zone = $TheBreach_Transit
 					$Map_To_Farm = $TheBreach_Map
 				Case "AnvilRock"
 					$Map_To_Zone = $AnvilRock_Outpost
@@ -461,11 +461,11 @@ While 1
 				Else
 					CurrentAction("Already in Map, starting Vanquish.")
 				EndIf
-			ElseIf GetMapID() == $Map_To_Zone Then
-				CurrentAction("Already in Outpost, heading out.")
+			ElseIf GetMapID() == $Map_To_Zone Or _Vanquisher_IsOnTransitToFarm() Then
+				CurrentAction("On transit map, heading out.")
 				_Vanquisher_ApplyDifficulty()
 				GoOut()
-			Else
+			ElseIf $Title = "TravelersVale" Then
 				CurrentAction("Zoning to Outpost")
 				local $out = 0
 				Do
@@ -475,6 +475,9 @@ While 1
 				Until GetMapID() = $Map_To_Zone or $out = 6
 				_Vanquisher_ApplyDifficulty()
 				GoOut()
+			Else
+				CurrentAction("Waiting for caravan transit - on map " & GetMapID() & ", need route to " & $Map_To_Farm & ".")
+				Sleep(3000)
 			EndIf
 
 			If GetMapID() = $Map_To_Farm Then

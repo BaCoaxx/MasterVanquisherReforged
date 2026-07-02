@@ -2,18 +2,13 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aAscalonFoothillsOutpostPath[2][2] = [ _
-	[9342, 4942], _
-	[9240, 3985] _
-]
-
 Global $aAscalonFoothillsTransitPath[6][2] = [ _
-	[8304, -458], _
-	[10540, -4383], _
-	[10274, -11684], _
-	[9741, -16900], _
-	[10668, -17113], _
-	[11056, -17139] _
+	[5683, -16716], _
+	[8917, -14510], _
+	[10306, -13417], _
+	[11000, -16000], _
+	[11200, -16800], _
+	[11345, -17157] _
 ]
 
 Func GoOutAscalonFoothills()
@@ -21,23 +16,13 @@ Func GoOutAscalonFoothills()
 
 	If $l_i_Map = $AscalonFoothills_Map Then Return
 
-	If $l_i_Map = $AscalonFoothills_Outpost Then
-		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
-		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> AscalonFoothills (portal 1)")
-		_Vanquisher_RunAggroPortalPath($aAscalonFoothillsOutpostPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
-		$g_b_Vanquisher_TransitOnly = False
-		Return
-	EndIf
-
 	If $l_i_Map = $AscalonFoothills_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		_Vanquisher_ApplyTravelersValeConsumables()
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Transit -> AscalonFoothills (portal 2)")
+		CurrentAction("Traveler's Vale -> AscalonFoothills")
 		_Vanquisher_RunAggroPortalPath($aAscalonFoothillsTransitPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
 	EndIf
@@ -45,19 +30,19 @@ Func GoOutAscalonFoothills()
 EndFunc
 
 Func VQAscalonFoothills()
-	If GetMapID() <> $AscalonFoothills_Map And GetMapID() <> $AscalonFoothills_Outpost And GetMapID() <> $AscalonFoothills_Transit Then
+	If GetMapID() <> $AscalonFoothills_Map And GetMapID() <> $AscalonFoothills_Transit Then
 		_Vanquisher_ResetGoOutRouteProgress()
-		CurrentAction("Traveling to outpost for AscalonFoothills.")
-		TravelTo($AscalonFoothills_Outpost)
+		CurrentAction("AscalonFoothills route waiting - on map " & GetMapID() & ", need " & $AscalonFoothills_Map & " via Traveler's Vale.")
+		Return
 	EndIf
 
-	If GetMapID() = $AscalonFoothills_Outpost Or GetMapID() = $AscalonFoothills_Transit Then
+	If GetMapID() = $AscalonFoothills_Transit Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutAscalonFoothills()
 		If GetMapID() <> $AscalonFoothills_Map Then
 			CurrentAction("Routing - on map " & GetMapID() & ", need AscalonFoothills (" & $AscalonFoothills_Map & ").")
 			Return
-	EndIf
+		EndIf
 	EndIf
 
 	If GetMapID() <> $AscalonFoothills_Map Then
@@ -85,4 +70,3 @@ Func VQAscalonFoothills()
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
-

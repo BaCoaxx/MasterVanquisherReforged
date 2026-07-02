@@ -1,29 +1,25 @@
-;Ascalon IDs
+;Ascalon IDs (Ascalon caravan: transit-only between explorable zones; Yak's Bend only for Traveler's Vale start)
 Global $AscalonFoothills_Map = 103
-Global $AscalonFoothills_Outpost = 134         ;Yak's Bend to have a 6 man party
 Global $AscalonFoothills_Transit = 99          ;Traveler's Vale
 Global $DiessaLowlands_Map = 13
-Global $DiessaLowlands_Outpost = 134           ;Yak's Bend
-Global $DiessaLowlands_Transit = 99            ;Traveler's Vale
-Global $DiessaLowlands_Transit2 = 103          ;Ascalon Foothills
+Global $DiessaLowlands_Transit = 103           ;Ascalon Foothills
 Global $DragonsGullet_Map = 105
-Global $DragonsGullet_Outpost = 36             ;Grendich Courthouse
-Global $DragonsGullet_Transit = 13             ;Diessa Lowlands
-Global $DragonsGullet_Transit2 = 106           ;Flame Temple Corridor
+Global $DragonsGullet_Transit = 106           ;Flame Temple Corridor
+Global $DragonsGullet_Transit2 = 13            ;Diessa Lowlands (Diessa -> FTC)
 Global $EasternFrontier_Map = 107
-Global $EasternFrontier_Outpost = 30           ;Ruins of Surmia
+Global $EasternFrontier_Transit = 104          ;Pockmark Flats
 Global $FlameTempleCorridor_Map = 106
-Global $FlameTempleCorridor_Outpost = 36       ;Grendich Courthouse
 Global $FlameTempleCorridor_Transit = 13       ;Diessa Lowlands
 Global $OldAscalon_Map = 33
-Global $OldAscalon_Outpost = 81                ;Ascalon City
+Global $OldAscalon_Transit = 102               ;The Breach
 Global $PockmarkFlats_Map = 104
-Global $PockmarkFlats_Outpost = 131            ;Serenity Temple
+Global $PockmarkFlats_Transit = 101          ;Regent Valley
 Global $RegentValley_Map = 101
-Global $RegentValley_Outpost = 29              ;Fort Ranik
+Global $RegentValley_Transit = 33              ;Old Ascalon
 Global $TheBreach_Map = 102
-Global $TheBreach_Outpost = 134                ;Yak's Bend
 Global $TheBreach_Transit = 13                 ;Diessa Lowlands
+Global $TheBreach_Transit2 = 106              ;Flame Temple Corridor (return from Dragon's Gullet)
+Global $TheBreach_Transit3 = 105              ;Dragon's Gullet (return start)
 ;NorthernShiverpeaks IDs
 Global $AnvilRock_Map = 89
 Global $AnvilRock_Outpost = 132                ;Ice Tooth Cave

@@ -1,12 +1,24 @@
 
 Func _Vanquisher_IsOnTransitToFarm()
 	Switch $Title
-		Case "DiessaLowlands"
-			Return GetMapID() = $DiessaLowlands_Transit Or GetMapID() = $DiessaLowlands_Transit2
 		Case "AscalonFoothills"
 			Return GetMapID() = $AscalonFoothills_Transit
+		Case "DiessaLowlands"
+			Return GetMapID() = $DiessaLowlands_Transit
+		Case "FlameTempleCorridor"
+			Return GetMapID() = $FlameTempleCorridor_Transit
+		Case "DragonsGullet"
+			Return GetMapID() = $DragonsGullet_Transit Or GetMapID() = $DragonsGullet_Transit2
 		Case "TheBreach"
-			Return GetMapID() = $TheBreach_Transit
+			Return GetMapID() = $TheBreach_Transit Or GetMapID() = $TheBreach_Transit2 Or GetMapID() = $TheBreach_Transit3
+		Case "OldAscalon"
+			Return GetMapID() = $OldAscalon_Transit
+		Case "RegentValley"
+			Return GetMapID() = $RegentValley_Transit
+		Case "PockmarkFlats"
+			Return GetMapID() = $PockmarkFlats_Transit
+		Case "EasternFrontier"
+			Return GetMapID() = $EasternFrontier_Transit
 	EndSwitch
 	Return False
 EndFunc
@@ -33,36 +45,22 @@ Func GoOut()
 		Switch $Title
 			Case "AscalonFoothills"
 				GoOutAscalonFoothills()
-				Case "DiessaLowlands"
-					GoOutDiessaLowlands()
-				Case "DragonsGullet"
-					MoveTo(945, 14173)
-					Move(2341, 13416)
-					WaitForLoad()
-				Case "EasternFrontier"
-					MoveTo(-2300, -13836)
-					Move(-1593, -13669)
-					WaitForLoad()
-				Case "FlameTempleCorridor"
-					MoveTo(945, 14173)
-					Move(2341, 13416)
-					WaitForLoad()
-				Case "OldAscalon"
-					MoveTo(625, 1883)
-					Move(-426, 1874)
-					WaitForLoad()
-				Case "PockmarkFlats"
-					MoveTo(-6218, 22736)
-					Move(-6197, 22280)
-					WaitForLoad()
-				Case "RegentValley"
-					MoveTo(7936, -28412)
-					MoveTo(7194, -31058)
-					MoveTo(7208, -32163)
-					Move(7208, -32863)
-					WaitForLoad()
-				Case "TheBreach"
-					GoOutTheBreach()
+			Case "DiessaLowlands"
+				GoOutDiessaLowlands()
+			Case "DragonsGullet"
+				GoOutDragonsGullet()
+			Case "EasternFrontier"
+				GoOutEasternFrontier()
+			Case "FlameTempleCorridor"
+				GoOutFlameTempleCorridor()
+			Case "OldAscalon"
+				GoOutOldAscalon()
+			Case "PockmarkFlats"
+				GoOutPockmarkFlats()
+			Case "RegentValley"
+				GoOutRegentValley()
+			Case "TheBreach"
+				GoOutTheBreach()
 
 		;NorthernShiverpeaks
 				Case "AnvilRock"

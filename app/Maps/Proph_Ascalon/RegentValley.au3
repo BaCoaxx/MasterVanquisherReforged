@@ -2,11 +2,12 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aRegentValleyOutpostPath[4][2] = [ _
-	[7936, -28412], _
-	[7194, -31058], _
-	[7208, -32163], _
-	[7208, -32863] _
+Global $aRegentValleyTransitPath[5][2] = [ _
+	[6267, -9468], _
+	[9976, -12910], _
+	[8185, -12536], _
+	[9000, -13100], _
+	[10629, -13704] _
 ]
 
 Func GoOutRegentValley()
@@ -14,12 +15,12 @@ Func GoOutRegentValley()
 
 	If $l_i_Map = $RegentValley_Map Then Return
 
-	If $l_i_Map = $RegentValley_Outpost Then
+	If $l_i_Map = $RegentValley_Transit Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> RegentValley (portal 1)")
-		_Vanquisher_RunAggroPortalPath($aRegentValleyOutpostPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		CurrentAction("OldAscalon -> RegentValley")
+		_Vanquisher_RunAggroPortalPath($aRegentValleyTransitPath, $vqrange, "outpost ")
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
 	EndIf
@@ -27,19 +28,19 @@ Func GoOutRegentValley()
 EndFunc
 
 Func VQRegentValley()
-	If GetMapID() <> $RegentValley_Map And GetMapID() <> $RegentValley_Outpost Then
+	If GetMapID() <> $RegentValley_Map And GetMapID() <> $RegentValley_Transit Then
 		_Vanquisher_ResetGoOutRouteProgress()
-		CurrentAction("Traveling to outpost for RegentValley.")
-		TravelTo($RegentValley_Outpost)
+		CurrentAction("RegentValley route waiting - on map " & GetMapID() & ", need " & $RegentValley_Map & " via Old Ascalon.")
+		Return
 	EndIf
 
-	If GetMapID() = $RegentValley_Outpost Then
+	If GetMapID() = $RegentValley_Transit Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutRegentValley()
 		If GetMapID() <> $RegentValley_Map Then
 			CurrentAction("Routing - on map " & GetMapID() & ", need RegentValley (" & $RegentValley_Map & ").")
 			Return
-	EndIf
+		EndIf
 	EndIf
 
 	If GetMapID() <> $RegentValley_Map Then
@@ -159,4 +160,3 @@ Func VQRegentValley()
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
-
