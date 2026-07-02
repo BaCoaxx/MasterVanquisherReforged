@@ -2,7 +2,7 @@
 
 Master Vanquisher Reforged is a modernized version of the original GWA2 **MASTER VANQUISHER** project, updated and expanded for **GWAu3**. The project is designed to automate Guild Wars vanquishing across all campaigns while maintaining compatibility with modern systems.
 
-Originally based on the work of the GWA2 community, many maps and systems have been updated and rewritten by **Mr. Obvious (incognito-ghroot)**.
+Originally based on the work of the GWA2 community, many maps and systems have been updated and rewritten by **incognito-ghroot**.
 
 ---
 
