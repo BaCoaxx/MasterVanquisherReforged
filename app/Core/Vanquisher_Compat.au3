@@ -789,13 +789,26 @@ Func _Vanquisher_AdvanceZoneQueue()
     Return True
 EndFunc
 
+Func _Vanquisher_IsAscalonCaravanZone($a_s_Title = "")
+    If $a_s_Title = "" Then $a_s_Title = $Title
+    Switch $a_s_Title
+        Case "TravelersVale", "AscalonFoothills", "DiessaLowlands", "FlameTempleCorridor", "DragonsGullet", "TheBreach", "OldAscalon", "RegentValley", "PockmarkFlats", "EasternFrontier"
+            Return True
+    EndSwitch
+    Return False
+EndFunc
+
 Func _Vanquisher_FinishRun()
     Global $boolrun
     If $g_b_Vanquisher_RunFinished Then Return
     $g_b_Vanquisher_RunFinished = True
     $g_b_Vanquisher_AbortRoute = True
-    CurrentAction("Vanquish complete — returning to outpost.")
-    _Vanquisher_ReturnToOutpost()
+    If _Vanquisher_IsAscalonCaravanZone() Then
+        CurrentAction("Vanquish complete — staying on map for caravan transit.")
+    Else
+        CurrentAction("Vanquish complete — returning to outpost.")
+        _Vanquisher_ReturnToOutpost()
+    EndIf
     If _Vanquisher_AdvanceZoneQueue() Then
         CurrentAction("Next zone in queue.")
         Return
@@ -859,6 +872,7 @@ EndFunc
 
 Func _Vanquisher_ReturnToOutpost()
     If Not Map_GetInstanceInfo("IsExplorable") Then Return True
+    If _Vanquisher_IsAscalonCaravanZone() Then Return True
 
     CurrentAction("Returning to outpost after vanquish.")
     If Not GetIsDead(-2) And Death() <> 1 Then

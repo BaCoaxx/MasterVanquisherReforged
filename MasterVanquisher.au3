@@ -522,23 +522,27 @@ While 1
 					If FactionCheckLuxon() Then TurnInFactionLuxon()
 			EndSwitch
 
-			If GetMapID() = $Map_To_Farm Or GetMapID() = $Map_To_Zone Then
+			If GetMapID() = $Map_To_Farm Or GetMapID() = $Map_To_Zone Or _Vanquisher_IsOnTransitToFarm() Then
 				If _Vanquisher_ShouldRunRoute() Then
 					VQ()
 				Else
 					CurrentAction("Vanquish complete — skipping route.")
 				EndIf
 			Else
-				CurrentAction("Wrong map (id " & GetMapID() & ", need farm " & $Map_To_Farm & " or outpost " & $Map_To_Zone & ").")
+				CurrentAction("Wrong map (id " & GetMapID() & ", need farm " & $Map_To_Farm & " or transit " & $Map_To_Zone & ").")
 			EndIf
 			UpdateVanquish()
 			If $g_b_Vanquisher_RunFinished Then
 				CurrentAction("Vanquish already finished this run.")
-			ElseIf GetAreaVanquished() Then
+			ElseIf GetAreaVanquished() And GetMapID() = $Map_To_Farm Then
 				_Vanquisher_FinishRun()
 			ElseIf _Vanquisher_IsVanquishIncomplete() And GetMapID() = $Map_To_Farm Then
-				CurrentAction("Vanquish incomplete — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining. Returning to outpost to retry.")
-				_Vanquisher_ReturnToOutpost()
+				If _Vanquisher_IsAscalonCaravanZone() Then
+					CurrentAction("Vanquish incomplete — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining. Retrying route on map.")
+				Else
+					CurrentAction("Vanquish incomplete — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining. Returning to outpost to retry.")
+					_Vanquisher_ReturnToOutpost()
+				EndIf
 			ElseIf GetMapID() = $Map_To_Farm Then
 				CurrentAction("Run finished — " & GetFoesKilled() & " killed, " & GetFoesToKill() & " remaining.")
 			EndIf
