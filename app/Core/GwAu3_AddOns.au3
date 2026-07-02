@@ -482,7 +482,7 @@ Func _UAI_Fight($a_f_x, $a_f_y, $a_f_AggroRange = 1320, $a_f_MaxDistanceToXY = 3
     Local $l_b_HasPriority = IsArray($l_v_PriorityTargets) Or $l_v_PriorityTargets <> 0
 
     If $l_b_HasPriority Then
-        UAI_UpdateCache($a_f_AggroRange)
+        UAI_UpdateAgentCache($a_f_AggroRange)
         $g_i_ForceTarget = UAI_FindAgentByPlayerNumber($l_v_PriorityTargets, -2, $a_f_AggroRange, "UAI_Filter_IsLivingEnemy")
         If $g_i_ForceTarget = 0 And $a_b_KillOnly Then Return True
     EndIf
@@ -515,7 +515,7 @@ Func _UAI_UseSkills($a_f_x, $a_f_y, $a_f_AggroRange = 1320, $a_f_MaxDistanceToXY
 
         If SurvivorMode() Then Return
 
-        UAI_UpdateCache($a_f_AggroRange)
+        UAI_UpdateAgentCache($a_f_AggroRange)
         If UAI_CountEnemyInPartyAggroRange($a_f_AggroRange) = 0 Then ExitLoop
         If $g_b_CacheWeaponSet Then UAI_ShouldSwitchWeaponSet()
 

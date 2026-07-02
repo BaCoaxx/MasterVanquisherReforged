@@ -24,7 +24,7 @@ Func Fight($a_i_AggroRange, $a_s_Label = "")
     Local $l_f_AnchorX = Agent_GetAgentInfo(-2, "X")
     Local $l_f_AnchorY = Agent_GetAgentInfo(-2, "Y")
 
-    UAI_UpdateCache($a_i_AggroRange)
+    UAI_UpdateAgentCache($a_i_AggroRange)
     UAI_Fight($l_f_AnchorX, $l_f_AnchorY, $a_i_AggroRange, 3500, $g_i_FinisherMode, True, 0, False, "_Vanquisher_FightExitCallback")
 
     UpdateVanquish()

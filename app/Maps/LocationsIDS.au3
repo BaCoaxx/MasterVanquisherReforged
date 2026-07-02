@@ -22,7 +22,8 @@ Global $PockmarkFlats_Outpost = 131            ;Serenity Temple
 Global $RegentValley_Map = 101
 Global $RegentValley_Outpost = 29              ;Fort Ranik
 Global $TheBreach_Map = 102
-Global $TheBreach_Outpost = 40                 ;Piken Square
+Global $TheBreach_Outpost = 134                ;Yak's Bend
+Global $TheBreach_Transit = 13                 ;Diessa Lowlands
 ;NorthernShiverpeaks IDs
 Global $AnvilRock_Map = 89
 Global $AnvilRock_Outpost = 132                ;Ice Tooth Cave

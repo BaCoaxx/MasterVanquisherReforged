@@ -5,6 +5,8 @@ Func _Vanquisher_IsOnTransitToFarm()
 			Return GetMapID() = $DiessaLowlands_Transit Or GetMapID() = $DiessaLowlands_Transit2
 		Case "AscalonFoothills"
 			Return GetMapID() = $AscalonFoothills_Transit
+		Case "TheBreach"
+			Return GetMapID() = $TheBreach_Transit
 	EndSwitch
 	Return False
 EndFunc
@@ -60,10 +62,7 @@ Func GoOut()
 					Move(7208, -32863)
 					WaitForLoad()
 				Case "TheBreach"
-					MoveTo(20252, 8439)
-					MoveTo(20242, 7929)
-					Move(20246, 7491)
-					WaitForLoad()
+					GoOutTheBreach()
 
 		;NorthernShiverpeaks
 				Case "AnvilRock"

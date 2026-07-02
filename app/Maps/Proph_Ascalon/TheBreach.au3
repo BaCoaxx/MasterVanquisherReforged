@@ -2,10 +2,21 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aTheBreachOutpostPath[3][2] = [ _
-	[20252, 8439], _
-	[20242, 7929], _
-	[20246, 7491] _
+Global $aTheBreachOutpostPath[2][2] = [ _
+	[8304, -458], _
+	[10540, -4383] _
+]
+
+Global $aTheBreachTransitPath[9][2] = [ _
+	[8840, -4058], _
+	[9238, -7447], _
+	[10828, -10741], _
+	[18276, -6046], _
+	[22121, -7474], _
+	[21982, -11599], _
+	[22800, -13800], _
+	[23600, -14700], _
+	[23940, -15154] _
 ]
 
 Func GoOutTheBreach()
@@ -16,9 +27,19 @@ Func GoOutTheBreach()
 	If $l_i_Map = $TheBreach_Outpost Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		$g_b_Vanquisher_TransitOnly = True
-		CurrentAction("Outpost -> TheBreach (portal 1)")
+		CurrentAction("Outpost -> DiessaLowlands (portal 1)")
 		_Vanquisher_RunAggroPortalPath($aTheBreachOutpostPath, $vqrange, "outpost ")
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+		$g_b_Vanquisher_TransitOnly = False
+		Return
+	EndIf
+
+	If $l_i_Map = $TheBreach_Transit Then
+		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
+		$g_b_Vanquisher_TransitOnly = True
+		CurrentAction("DiessaLowlands -> TheBreach (portal 2)")
+		_Vanquisher_RunAggroPortalPath($aTheBreachTransitPath, $vqrange, "outpost ")
+		If GetMapID() <> $l_i_Map Then $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		$g_b_Vanquisher_TransitOnly = False
 		Return
 	EndIf
@@ -26,13 +47,13 @@ Func GoOutTheBreach()
 EndFunc
 
 Func VQTheBreach()
-	If GetMapID() <> $TheBreach_Map And GetMapID() <> $TheBreach_Outpost Then
+	If GetMapID() <> $TheBreach_Map And GetMapID() <> $TheBreach_Outpost And GetMapID() <> $TheBreach_Transit Then
 		_Vanquisher_ResetGoOutRouteProgress()
 		CurrentAction("Traveling to outpost for TheBreach.")
 		TravelTo($TheBreach_Outpost)
 	EndIf
 
-	If GetMapID() = $TheBreach_Outpost Then
+	If GetMapID() = $TheBreach_Outpost Or GetMapID() = $TheBreach_Transit Then
 		_Vanquisher_ApplyDifficulty()
 		GoOutTheBreach()
 		If GetMapID() <> $TheBreach_Map Then

@@ -81,7 +81,7 @@ Func VQAscalonFoothills()
 		[4885, 5096, " ", $vqrange], _
 		[5939, 1126, " ", $vqrange], _
 		[3321, -3531, " ", $vqrange], _
-		[7307, -5105, " ", $vqrange] ]
+		[7394, -6932, " ", $vqrange] ]
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
