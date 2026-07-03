@@ -2,6 +2,11 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
+Global $aTravelersValeOutpostPath[2][2] = [ _
+	[9351, 5045], _
+	[9320, 4122] _
+]
+
 Func GoOutTravelersVale()
 	Local $l_i_Map = GetMapID()
 
@@ -10,14 +15,16 @@ Func GoOutTravelersVale()
 	If $l_i_Map = $TravelersVale_Outpost Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		CurrentAction("Outpost -> Traveler's Vale")
-		MoveTo(9351, 5045)
-		Move(9320, 4122)
-		WaitForLoad()
-		If GetMapID() = $TravelersVale_Map Then
-			_Vanquisher_WaitForExplorable()
-			_Vanquisher_ApplyConsumables(True)
+		_Vanquisher_RunAggroPortalPath($aTravelersValeOutpostPath, $vqrange, "outpost ")
+		If GetMapID() <> $l_i_Map Then
+			$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
+			If GetMapID() = $TravelersVale_Map Then
+				_Vanquisher_WaitForExplorable()
+				_Vanquisher_ApplyConsumables(True)
+			EndIf
+		Else
+			CurrentAction("Portal to Traveler's Vale failed — still on map " & GetMapID() & ", will retry.")
 		EndIf
-		$g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map
 		Return
 	EndIf
 
