@@ -10,8 +10,8 @@ Func GoOutTravelersVale()
 	If $l_i_Map = $TravelersVale_Outpost Then
 		If $g_i_Vanquisher_GoOutLastMapHandled = $l_i_Map Then Return
 		CurrentAction("Outpost -> Traveler's Vale")
-		MoveTo(9303, 4208)
-		Move(9275, 4000)
+		MoveTo(9351, 5045)
+		Move(9320, 4122)
 		WaitForLoad()
 		If GetMapID() = $TravelersVale_Map Then
 			_Vanquisher_WaitForExplorable()

@@ -15,16 +15,21 @@ Global $aTheBreachReturnFromFTCPath[4][2] = [ _
 	[-18414, -13661] _
 ]
 
-Global $aTheBreachTransitPath[9][2] = [ _
-	[8840, -4058], _
-	[9238, -7447], _
-	[10828, -10741], _
-	[18276, -6046], _
-	[22121, -7474], _
-	[21982, -11599], _
-	[22800, -13800], _
-	[23600, -14700], _
-	[23940, -15154] _
+Global $aTheBreachTransitPath[14][2] = [ _
+	[-21985, 16166], _
+	[-21331, 15866], _
+	[-20807, 15451], _
+	[-20132, 15059], _
+	[-19524, 14998], _
+	[-18289, 14805], _
+	[-18303, 14382], _
+	[18866, -12417], _
+	[20923, -13708], _
+	[21327, -15126], _
+	[22108, -15166], _
+	[22695, -15234], _
+	[23184, -15256], _
+	[23537, -15272] _
 ]
 
 Func GoOutTheBreach()
@@ -87,7 +92,7 @@ Func VQTheBreach()
 
 	CurrentAction("Starting TheBreach vanquish route.")
 
-	Local $aWaypoints[78][4] = [ _
+	Local $aWaypoints[68][4] = [ _
 		[20930, 5611, " ", $vqrange], _
 		[16965, 6388, " ", $vqrange], _
 		[16032, 3792, " ", $vqrange], _
@@ -156,16 +161,7 @@ Func VQTheBreach()
 		[-6846, -8057, " ", $vqrange], _
 		[-4791, -6985, " ", $vqrange], _
 		[-3600, -8540, " ", $vqrange], _
-		[-2411, -4031, " ", $vqrange], _
-		[948, -3193, " ", $vqrange], _
-		[5332, -2861, " ", $vqrange], _
-		[1303, -3599, " ", $vqrange], _
-		[441, -4559, " ", $vqrange], _
-		[1931, -4717, " ", $vqrange], _
-		[2266, -6672, " ", $vqrange], _
-		[6900, -6177, " ", $vqrange], _
-		[6863, -4430, " ", $vqrange], _
-		[6802, -804, " ", $vqrange] ]
+		[-3795, -8404, " ", $vqrange] ]
 
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc

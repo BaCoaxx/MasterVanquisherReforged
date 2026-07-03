@@ -2,12 +2,13 @@
 Global $vqrange = 1450
 Global $ActionCounter = 1
 
-Global $aRegentValleyTransitPath[5][2] = [ _
-	[6267, -9468], _
-	[9976, -12910], _
-	[8185, -12536], _
-	[9000, -13100], _
-	[10629, -13704] _
+Global $aRegentValleyTransitPath[6][2] = [ _
+	[13848, -8185], _
+	[12519, -9143], _
+	[11393, -10165], _
+	[10333, -10978], _
+	[10249, -13662], _
+	[10525, -13681] _
 ]
 
 Func GoOutRegentValley()
