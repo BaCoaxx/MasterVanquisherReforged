@@ -159,3 +159,4 @@ Global $g_a_VanquisherZoneQueue[0]
 Global $g_i_VanquisherZoneQueueIndex = -1
 Global $g_b_Vanquisher_QueueAdvanced = False
 Global $g_b_Vanquisher_SessionStarted = False
+Global $g_b_AscalonCaravan_VisitedDG = False

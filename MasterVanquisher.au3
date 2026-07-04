@@ -475,6 +475,10 @@ While 1
 				Until GetMapID() = $Map_To_Zone or $out = 6
 				_Vanquisher_ApplyDifficulty()
 				GoOut()
+			ElseIf _Vanquisher_ShouldAscalonCaravanCatchUp() Then
+				CurrentAction("Caravan catch-up — on map " & GetMapID() & ", routing toward " & $Title & ".")
+				_Vanquisher_ApplyDifficulty()
+				_Vanquisher_AscalonCaravanCatchUp()
 			Else
 				CurrentAction("Waiting for caravan transit - on map " & GetMapID() & ", need route to " & $Map_To_Farm & ".")
 				Sleep(3000)

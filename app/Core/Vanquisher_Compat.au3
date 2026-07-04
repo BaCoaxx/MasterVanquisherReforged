@@ -780,6 +780,7 @@ Func _Vanquisher_AdvanceZoneQueue()
     $Title = _Vanquisher_ZoneTitle($g_a_VanquisherZoneQueue[$g_i_VanquisherZoneQueueIndex])
     $NumberRun = 0
     $g_b_Vanquisher_QueueAdvanced = True
+    If $Title = "TravelersVale" Then $g_b_AscalonCaravan_VisitedDG = False
     _Vanquisher_ResetZoneRouteState()
 
     Local $iPos = $g_i_VanquisherZoneQueueIndex + 1
@@ -796,6 +797,113 @@ Func _Vanquisher_IsAscalonCaravanZone($a_s_Title = "")
             Return True
     EndSwitch
     Return False
+EndFunc
+
+Func _Vanquisher_AscalonCaravanTargetIndex($a_s_Title)
+    Switch $a_s_Title
+        Case "TravelersVale"
+            Return 0
+        Case "AscalonFoothills"
+            Return 1
+        Case "DiessaLowlands"
+            Return 2
+        Case "FlameTempleCorridor"
+            Return 3
+        Case "DragonsGullet"
+            Return 4
+        Case "TheBreach"
+            Return 5
+        Case "OldAscalon"
+            Return 6
+        Case "RegentValley"
+            Return 7
+        Case "PockmarkFlats"
+            Return 8
+        Case "EasternFrontier"
+            Return 9
+    EndSwitch
+    Return -1
+EndFunc
+
+Func _Vanquisher_AscalonCaravanMapIndex($a_i_Map)
+    Switch $a_i_Map
+        Case $TravelersVale_Map
+            Return 0
+        Case $AscalonFoothills_Map
+            Return 1
+        Case $DiessaLowlands_Map
+            Return 2
+        Case $FlameTempleCorridor_Map
+            Return 3
+        Case $DragonsGullet_Map
+            Return 4
+        Case $TheBreach_Map
+            Return 5
+        Case $OldAscalon_Map
+            Return 6
+        Case $RegentValley_Map
+            Return 7
+        Case $PockmarkFlats_Map
+            Return 8
+        Case $EasternFrontier_Map
+            Return 9
+    EndSwitch
+    Return -1
+EndFunc
+
+Func _Vanquisher_ShouldAscalonCaravanCatchUp()
+    If Not _Vanquisher_IsAscalonCaravanZone() Then Return False
+
+    Local $l_i_Map = GetMapID()
+    If $l_i_Map = $Map_To_Farm Or $l_i_Map = $Map_To_Zone Then Return False
+    If _Vanquisher_IsOnTransitToFarm() Then Return False
+
+    Local $l_i_Current = _Vanquisher_AscalonCaravanMapIndex($l_i_Map)
+    Local $l_i_Target = _Vanquisher_AscalonCaravanTargetIndex($Title)
+    If $l_i_Current < 0 Or $l_i_Target < 0 Then Return False
+
+    Return $l_i_Current < $l_i_Target
+EndFunc
+
+Func _Vanquisher_AscalonCaravanCatchUp()
+    Local $l_i_Map = GetMapID()
+    Local $l_i_Before = $l_i_Map
+    Local $l_i_Target = _Vanquisher_AscalonCaravanTargetIndex($Title)
+
+    $g_b_Vanquisher_TransitOnly = True
+    _Vanquisher_ResetGoOutRouteProgress()
+
+    Switch $l_i_Map
+        Case $TravelersVale_Map
+            GoOutAscalonFoothills()
+        Case $AscalonFoothills_Map
+            GoOutDiessaLowlands()
+        Case $DiessaLowlands_Map
+            If $g_b_AscalonCaravan_VisitedDG And $l_i_Target >= _Vanquisher_AscalonCaravanTargetIndex("TheBreach") Then
+                GoOutTheBreach()
+            ElseIf $l_i_Target > _Vanquisher_AscalonCaravanTargetIndex("DiessaLowlands") Then
+                GoOutFlameTempleCorridor()
+            EndIf
+        Case $FlameTempleCorridor_Map
+            GoOutDragonsGullet()
+        Case $DragonsGullet_Map
+            GoOutTheBreach()
+        Case $TheBreach_Map
+            GoOutOldAscalon()
+        Case $OldAscalon_Map
+            GoOutRegentValley()
+        Case $RegentValley_Map
+            GoOutPockmarkFlats()
+        Case $PockmarkFlats_Map
+            GoOutEasternFrontier()
+    EndSwitch
+
+    If GetMapID() = $DragonsGullet_Map Then $g_b_AscalonCaravan_VisitedDG = True
+    If ($l_i_Before = $DragonsGullet_Map Or $l_i_Before = $FlameTempleCorridor_Map) And GetMapID() = $DiessaLowlands_Map Then
+        $g_b_AscalonCaravan_VisitedDG = True
+    EndIf
+
+    $g_b_Vanquisher_TransitOnly = False
 EndFunc
 
 Func _Vanquisher_FinishRun()
