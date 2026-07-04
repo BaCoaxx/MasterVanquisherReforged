@@ -38,6 +38,8 @@ Originally based on the work of the GWA2 community, many maps and systems have b
 
 ## Linux
 
+- Verified stable on fresh Debian 13 installation using Wine 10 with a 32-bit Wine prefix.
+
 Linux Operation:
  ### Install Required Packages
 
