@@ -233,7 +233,7 @@ Func VQSparkflySwamp()
 		[-659, -20472, " ", $vqrange], _
 		[-3151, -20137, " ", $vqrange], _
 		[-5704, -19833, " ", $vqrange], _
-		[-8234, -19342, " ", $vqrange]
+		[-8234, -19342, " ", $vqrange] _
 	]
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
