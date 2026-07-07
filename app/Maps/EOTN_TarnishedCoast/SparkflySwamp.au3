@@ -237,3 +237,4 @@ Func VQSparkflySwamp()
 	]
 	MoveandAggroVQFullRoute($aWaypoints)
 EndFunc
+
